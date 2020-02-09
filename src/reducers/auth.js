@@ -4,14 +4,18 @@ import {
   AUTH_ERROR,
   USER_LOADED,
   LOGIN_SUCCESS,
-  LOGIN_FAIL
+  LOGIN_FAIL,
+  LOGOUT,
+  LIKE_SCREAM,
+  UNLIKE_SCREAM
 } from "../actions/type";
 
 const initialState = {
   token: localStorage.getItem("token"),
   isAuthenticated: false,
   loading: true,
-  credentials: null
+  credentials: {},
+  likes: []
 };
 export default function(state = initialState, action) {
   const { type, payload } = action;
@@ -40,7 +44,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         token: null,
-        user: null,
+        credentials: {},
         isAuthenticated: false,
         loading: false
       };
@@ -67,9 +71,40 @@ export default function(state = initialState, action) {
       return {
         ...state,
         token: null,
-        user: null,
+        credentials: {},
         isAuthenticated: false,
         loading: false
+      };
+    }
+    case LOGOUT: {
+      localStorage.removeItem("token");
+      return {
+        ...state,
+        token: null,
+        credentials: {},
+        isAuthenticated: false,
+        loading: false
+      };
+    }
+    case LIKE_SCREAM: {
+      return {
+        ...state,
+        likes: [
+          ...state.likes,
+          {
+            userHandle: state.credentials.handle,
+            screamId: action.payload.screamId
+          }
+        ]
+      };
+    }
+    case UNLIKE_SCREAM: {
+      console.log(action.payload.screamId);
+      return {
+        ...state,
+        likes: state.likes.filter(
+          like => like.screamId != action.payload.screamId
+        )
       };
     }
   }

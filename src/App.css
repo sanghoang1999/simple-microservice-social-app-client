@@ -15,5 +15,12 @@ a{
 }
 .container {
   margin:80px auto 0 auto;
-  max-width: 1000px;
+  max-width: 850px;
+}
+.nav-auth svg {
+  color:white;
+}
+.nav-auth-wrap-icon {
+  display: inline-block;
+  margin-right: 10px;
 }

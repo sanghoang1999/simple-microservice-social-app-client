@@ -7,19 +7,29 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   SET_ALERT,
-  REMOVE_ALERT
+  REMOVE_ALERT,
+  LOGOUT
 } from "./type";
 import { setAlert } from "./alert";
+import setAuthToken from "../utils/setAuthToken";
 
 export const loadUser = () => async dispatch => {
-  try {
-    const res = await axios.get("/user");
-    console.log(res);
-    dispatch({
-      type: USER_LOADED,
-      payload: res.data
-    });
-  } catch (error) {
+  if (localStorage.getItem("token")) {
+    setAuthToken(localStorage.getItem("token"));
+    try {
+      const res = await axios.get("/user/me");
+      dispatch({
+        type: USER_LOADED,
+        payload: res.data
+      });
+    } catch (error) {
+      console.error(error);
+
+      dispatch({
+        type: AUTH_ERROR
+      });
+    }
+  } else {
     dispatch({
       type: AUTH_ERROR
     });
@@ -33,7 +43,6 @@ export const login = ({ email, password }) => async dispatch => {
       password
     };
     const token = await axios.post("/user/login", data);
-    console.log(token.data);
     dispatch({
       type: REMOVE_ALERT
     });
@@ -45,12 +54,9 @@ export const login = ({ email, password }) => async dispatch => {
     return token;
   } catch (error) {
     const errObject = error.response.data.errors.reduce((x, y) => {
-      console.log(Object.keys(y).length);
-      const data = {};
       if (Object.keys(y).length > 1) {
         x[y.param] = y.msg;
       } else {
-        console.log(y.msg, y.msg.indexOf("Passwrod"));
         if (y.msg.indexOf("Password") !== -1) {
           x["password"] = y.msg;
         } else {
@@ -76,7 +82,6 @@ export const register = ({ email, password, handle }) => async dispatch => {
       handle
     };
     const token = await axios.post("/user/signup", data);
-    console.log(token.data);
     dispatch({
       type: REMOVE_ALERT
     });
@@ -88,11 +93,9 @@ export const register = ({ email, password, handle }) => async dispatch => {
   } catch (error) {
     console.log(error);
     const errObject = error.response.data.errors.reduce((x, y) => {
-      console.log(Object.keys(y).length);
       if (Object.keys(y).length > 1) {
         x[y.param] = y.msg;
       } else {
-        console.log(y.msg, y.msg.indexOf("Passwrod"));
         if (y.msg.indexOf("Password") !== -1) {
           x["password"] = y.msg;
         } else if (y.msg.indexOf("Email") !== -1) {
@@ -111,4 +114,10 @@ export const register = ({ email, password, handle }) => async dispatch => {
       type: REGISTER_FAIL
     });
   }
+};
+
+export const logout = () => async dispatch => {
+  dispatch({
+    type: LOGOUT
+  });
 };
