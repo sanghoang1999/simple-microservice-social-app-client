@@ -4,7 +4,7 @@ import "./App.css";
 import axios from "axios";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-
+import Alert from "./component/layout/AlertMessage";
 import home from "./component/pages/Home";
 import login from "./component/pages/Login";
 import signup from "./component/pages/Signup";
@@ -37,6 +37,7 @@ const App = () => {
         <div className="App">
           <Router>
             <Navbar />
+            <Alert />
             <div className="container">
               <Switch>
                 <Route exact path="/" component={home} />

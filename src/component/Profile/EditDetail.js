@@ -19,7 +19,6 @@ const EditDetail = ({
   userData: { loading, credentials },
   editUserDetails
 }) => {
-  console.log(loading, !credentials.bio, loading || !credentials.bio);
   const [open, setOpen] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
   const [formData, setFormData] = useState({
@@ -28,12 +27,15 @@ const EditDetail = ({
     location: ""
   });
   useEffect(() => {
-    setFormData({
-      bio: loading || !credentials.bio ? "" : credentials.bio,
-      website: loading || !credentials.bio ? "" : credentials.website,
-      location: loading || !credentials.bio ? "" : credentials.location
-    });
-  }, [credentials]);
+    if (open) {
+      console.log("editDetail useEffect");
+      setFormData({
+        bio: loading || !credentials.bio ? "" : credentials.bio,
+        website: loading || !credentials.bio ? "" : credentials.website,
+        location: loading || !credentials.bio ? "" : credentials.location
+      });
+    }
+  }, [credentials, open]);
   const { bio, website, location } = formData;
   const handleChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -50,6 +52,7 @@ const EditDetail = ({
     setIsSubmit(true);
     editUserDetails({ bio, website, location }).then(() => {
       setIsSubmit(false);
+      setOpen(false);
     });
   };
 
@@ -71,7 +74,7 @@ const EditDetail = ({
       >
         <DialogTitle id="form-dialog-title">Add User Details</DialogTitle>
         <DialogContent>
-          <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+          <form noValidate autoComplete="off">
             <div>
               <TextField
                 id="bio"
@@ -104,18 +107,22 @@ const EditDetail = ({
                 onChange={handleChange}
               />
             </div>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={isSubmit}
-            >
-              Add {isSubmit && <CircularProgress size={20} />}
-            </Button>
           </form>
         </DialogContent>
         <DialogActions style={{ paddingBottom: "15px" }}>
-          <Button onClick={handleClose} variant="contained" color="primary">
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={isSubmit}
+            onClick={handleSubmit}
+          >
+            Add{" "}
+            {isSubmit && (
+              <CircularProgress size={20} style={{ marginLeft: 8 }} />
+            )}
+          </Button>
+          <Button onClick={handleClose} variant="contained" color="secondary">
             Cancel
           </Button>
         </DialogActions>

@@ -33,11 +33,18 @@ const PostScream = ({ errors, postScream }) => {
   const handleClose = () => {
     setOpen(false);
   };
+  console.log(errors);
   const handleSubmit = async e => {
+    console.log(errors);
     e.preventDefault();
     setIsSubmit(true);
     postScream({ body }).then(() => {
       setIsSubmit(false);
+      setFormData({ body: "" });
+      console.log(errors);
+      if (errors.length == 0) {
+        console.log(errors);
+      }
     });
   };
 
@@ -77,7 +84,10 @@ const PostScream = ({ errors, postScream }) => {
             disabled={isSubmit}
             onClick={handleSubmit}
           >
-            Add {isSubmit && <CircularProgress size={20} />}
+            Add{" "}
+            {isSubmit && (
+              <CircularProgress size={20} style={{ marginLeft: 8 }} />
+            )}
           </Button>
           <Button onClick={handleClose} variant="contained" color="primary">
             Cancel

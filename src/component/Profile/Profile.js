@@ -85,7 +85,9 @@ const Profile = ({
     loading,
     isAuthenticated
   },
-  uploadImage
+  uploadImage,
+  openEditProfile,
+  onClikEditProfile
 }) => {
   const [isUploaded, setIsUploaded] = useState(false);
   const classes = useStyles();
@@ -168,7 +170,10 @@ const Profile = ({
               Joined <Moment format="DD/MM/YYYY">{createdAt}</Moment>
             </span>
           </div>
-          <EditDetail />
+          <EditDetail
+            openEditProfile={openEditProfile}
+            onClikEditProfile={onClikEditProfile}
+          />
         </CardContent>
       </Card>
     ) : (

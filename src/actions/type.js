@@ -1,5 +1,7 @@
 export const SET_ALERT = "SET_ALERT";
 export const REMOVE_ALERT = "REMOVE_ALERT";
+export const SET_MESSAGE = "SET_MESSAGE";
+export const REMOVE_MESSAGE = "REMOVE_MESSAGE";
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 export const USER_LOADED = "USER_LOADED";
@@ -13,3 +15,5 @@ export const UNLIKE_SCREAM = "UNLIKE_SCREAM";
 export const DELETE_SCREAM = "DELETE_SCREAM";
 export const LIKE_ERROR = "LIKE_ERROR";
 export const POST_SCREAM = "POST_SCREAM";
+export const GET_SCREAM = "GET_SCREAM";
+export const CLEAR_SCREAM = "CLEAR_SCREAM";

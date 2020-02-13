@@ -3,12 +3,15 @@ import {
   LIKE_SCREAM,
   UNLIKE_SCREAM,
   DELETE_SCREAM,
-  POST_SCREAM
+  POST_SCREAM,
+  GET_SCREAM,
+  CLEAR_SCREAM
 } from "../actions/type";
 
 const initialState = {
   screams: [],
-  scream: {},
+  scream: null,
+  numPage: 0,
   loading: true,
   error: {}
 };
@@ -16,9 +19,10 @@ export default function(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
     case GET_SCREAMS: {
+      state.numPage = payload.numPage;
+      state.screams.push(...payload.screams);
       return {
         ...state,
-        screams: payload,
         loading: false
       };
     }
@@ -52,7 +56,21 @@ export default function(state = initialState, action) {
     case POST_SCREAM: {
       return {
         ...state,
-        screams: [action.payload, ...state.screams]
+        screams: [payload, ...state.screams]
+      };
+    }
+    case GET_SCREAM: {
+      return {
+        ...state,
+        scream: action.payload,
+        loading: false
+      };
+    }
+    case CLEAR_SCREAM: {
+      return {
+        ...state,
+        scream: null,
+        loading: false
       };
     }
   }

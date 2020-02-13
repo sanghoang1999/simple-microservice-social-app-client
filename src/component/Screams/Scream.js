@@ -4,10 +4,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import DeleteScream from "./DeleteScream";
+import ScreamDialog from "./ScreamDialog";
 import Card from "@material-ui/core/Card";
 import { IconBtn } from "../../utils/IconBtn";
 import { likeScream, unlikeScream } from "../../actions/scream";
-
+import ProgressiveImage from "react-progressive-image";
 //MUI
 import ChatIcon from "@material-ui/icons/Chat";
 import CardContent from "@material-ui/core/CardContent";
@@ -26,8 +27,7 @@ const useStyles = makeStyles(theme => ({
   },
 
   image: {
-    minWidth: 100,
-    flex: 1
+    width: "180px"
   },
   detail: {
     padding: "5px 0 0 10px",
@@ -43,6 +43,7 @@ const Scream = ({
   likeScream,
   unlikeScream
 }) => {
+  const low_image = userImage.replace("_high", "_low");
   const handleLikeScream = () => {
     console.log("cc");
     likeScream(id);
@@ -75,12 +76,9 @@ const Scream = ({
   return (
     <div>
       <Card className={classes.card}>
-        <CardMedia
-          component="img"
-          image={userImage}
-          title="Contemplative Reptile"
-          className={classes.image}
-        ></CardMedia>
+        <ProgressiveImage src={userImage} placeholder={low_image}>
+          {src => <img src={src} alt="an image" className={classes.image} />}
+        </ProgressiveImage>
         <div className={classes.detail}>
           <div>
             <Typography
@@ -104,16 +102,19 @@ const Scream = ({
             </Typography>
             <Typography variant="body2">{body}</Typography>
           </div>
-          <div style={{ margin: "32px 0 0 -12px" }}>
-            <span>
+          <div style={{ margin: "32px 0 0 -12px", display: "flex" }}>
+            <span style={{ flex: 1 }}>
               {likeButton}
               <span>{likeCount}</span>
             </span>
-            <span>
+            <span style={{ flex: 1 }}>
               <IconBtn tip="comments">
                 <ChatIcon color="primary" />
               </IconBtn>
               <span>{1} comments</span>
+            </span>
+            <span>
+              <ScreamDialog screamId={id} userHandle={userHandle} />
             </span>
           </div>
         </div>

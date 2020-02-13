@@ -14,12 +14,13 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import PropTypes from "prop-types";
 import DeleteOutline from "@material-ui/icons/DeleteOutline";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles(theme => ({
   delBtn: {
     position: "absolute",
-    top: "-3%",
-    right: "-1%"
+    top: "0%",
+    right: "0%"
   }
 }));
 const DeleteScream = ({ deleteScream, screamId }) => {
@@ -47,10 +48,12 @@ const DeleteScream = ({ deleteScream, screamId }) => {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Add User Details</DialogTitle>
-        <DialogContent>xoa de</DialogContent>
+        <DialogTitle id="form-dialog-title">Delete Scream</DialogTitle>
+        <DialogContent style={{ width: "500px", padding: "20px" }}>
+          <Typography>Does you want to delete this scream ?</Typography>
+        </DialogContent>
         <DialogActions style={{ paddingBottom: "15px" }}>
-          <Button onClick={handleDelete} variant="contained" color="primary">
+          <Button onClick={handleDelete} color="secondary" variant="contained">
             Delete
           </Button>
           <Button onClick={handleClose} variant="contained" color="primary">
