@@ -90,7 +90,6 @@ const Navbar = ({ isAuthenticated, logout }) => {
                 <Button color="inherit" component={Link} to="/home">
                   <Typography
                     variant="button"
-                    component={Link}
                     to="/login"
                     color="inherit"
                     onClick={handleLogout}

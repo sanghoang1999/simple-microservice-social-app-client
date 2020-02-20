@@ -24,3 +24,6 @@ a{
   display: inline-block;
   margin-right: 10px;
 }
+.input-comment::placeholder {
+  color:red
+}

@@ -23,7 +23,8 @@ const useStyles = makeStyles(theme => ({
     right: "0%"
   }
 }));
-const DeleteScream = ({ deleteScream, screamId }) => {
+const DeleteScream = ({ user, deleteScream, screamId, userHandle }) => {
+  console.log("delete ne");
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
@@ -38,7 +39,9 @@ const DeleteScream = ({ deleteScream, screamId }) => {
       console.log(screamId);
     });
   };
-  return (
+  return !user.loading &&
+    user.isAuthenticated &&
+    userHandle === user.credentials.handle ? (
     <div className={classes.delBtn}>
       <IconBtn tip="Delete" onClick={handleClickOpen}>
         <DeleteOutline color="secondary" fontSize="small" />
@@ -62,13 +65,13 @@ const DeleteScream = ({ deleteScream, screamId }) => {
         </DialogActions>
       </Dialog>
     </div>
-  );
+  ) : null;
 };
 
-DeleteScream.propTypes = {};
+deleteScream.propTypes = {};
 
 const mapStateToProps = state => ({
-  userData: state.auth
+  user: state.auth
 });
 
 export default connect(mapStateToProps, { deleteScream })(DeleteScream);

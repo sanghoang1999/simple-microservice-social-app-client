@@ -5,7 +5,8 @@ import {
   DELETE_SCREAM,
   POST_SCREAM,
   GET_SCREAM,
-  CLEAR_SCREAM
+  CLEAR_SCREAM,
+  POST_COMMENT
 } from "../actions/type";
 
 const initialState = {
@@ -19,44 +20,44 @@ export default function(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
     case GET_SCREAMS: {
-      state.numPage = payload.numPage;
-      state.screams.push(...payload.screams);
       return {
         ...state,
+        numPage: payload.numPage,
+        screams: [...state.screams, ...payload.screams],
         loading: false
       };
     }
     case LIKE_SCREAM: {
-      let index = state.screams.findIndex(
-        scream => scream.id === action.payload.screamId
-      );
-      state.screams[index].likeCount += 1;
       return {
-        ...state
+        ...state,
+        screams: state.screams.map(scream =>
+          scream.id === payload.screamId
+            ? { ...scream, likeCount: (scream.likeCount += 1) }
+            : scream
+        )
       };
     }
     case UNLIKE_SCREAM: {
-      let index = state.screams.findIndex(
-        scream => scream.id === action.payload.screamId
-      );
-      state.screams[index].likeCount -= 1;
       return {
-        ...state
+        ...state,
+        screams: state.screams.map(scream =>
+          scream.id === payload.screamId
+            ? { ...scream, likeCount: (scream.likeCount -= 1) }
+            : scream
+        )
       };
     }
     case DELETE_SCREAM: {
-      let index = state.screams.findIndex(
-        scream => scream.id === action.payload.screamId
-      );
-      state.screams.splice(index, 1);
       return {
-        ...state
+        ...state,
+        screams: state.screams.filter(scream => scream.id !== payload.screamId)
       };
     }
     case POST_SCREAM: {
       return {
         ...state,
-        screams: [payload, ...state.screams]
+        screams: [payload, ...state.screams],
+        loading: false
       };
     }
     case GET_SCREAM: {
@@ -73,6 +74,21 @@ export default function(state = initialState, action) {
         loading: false
       };
     }
+    case POST_COMMENT: {
+      return {
+        ...state,
+        scream: {
+          ...state.scream,
+          comments: [payload.data, ...state.scream.comments]
+        },
+        screams: state.screams.map(scream =>
+          scream.id === payload.screamId
+            ? { ...scream, commentCount: (scream.commentCount += 1) }
+            : scream
+        )
+      };
+    }
   }
+
   return state;
 }

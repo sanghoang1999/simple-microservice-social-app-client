@@ -17,3 +17,6 @@ export const LIKE_ERROR = "LIKE_ERROR";
 export const POST_SCREAM = "POST_SCREAM";
 export const GET_SCREAM = "GET_SCREAM";
 export const CLEAR_SCREAM = "CLEAR_SCREAM";
+export const POST_COMMENT = "POST_COMMENT";
+export const STOP_LOADING_UI = "STOP_LOADING_UI";
+export const LOADING_UI = "LOADING_UI";

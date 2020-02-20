@@ -8,14 +8,12 @@ import ScreamDialog from "./ScreamDialog";
 import Card from "@material-ui/core/Card";
 import { IconBtn } from "../../utils/IconBtn";
 import { likeScream, unlikeScream } from "../../actions/scream";
+import LikeScreamBtn from "./LikeScreamBtn";
 import ProgressiveImage from "react-progressive-image";
 //MUI
 import ChatIcon from "@material-ui/icons/Chat";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
+
 import Typography from "@material-ui/core/Typography";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import FavoriteIcon from "@material-ui/icons/Favorite";
 
 import Moment from "react-moment";
 const useStyles = makeStyles(theme => ({
@@ -38,41 +36,20 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 const Scream = ({
-  scream: { body, createdAt, userImage, userHandle, id, likeCount },
-  user,
-  likeScream,
-  unlikeScream
+  scream: {
+    body,
+    createdAt,
+    userImage,
+    userHandle,
+    id,
+    likeCount,
+    commentCount
+  },
+  user
 }) => {
   const low_image = userImage.replace("_high", "_low");
-  const handleLikeScream = () => {
-    console.log("cc");
-    likeScream(id);
-  };
-  const HandleUnLikeScream = () => {
-    console.log("unlike");
-    unlikeScream(id);
-  };
   const classes = useStyles();
-  const likeButton = !user.isAuthenticated ? (
-    <IconBtn tip="like">
-      <Link to="/login">
-        <FavoriteBorderIcon color="primary" />
-      </Link>
-    </IconBtn>
-  ) : user.likes.length != 0 &&
-    user.likes.find(like => like.screamId === id) ? (
-    <IconBtn tip="UnLike" onClick={HandleUnLikeScream}>
-      <FavoriteIcon color="primary" />
-    </IconBtn>
-  ) : (
-    <IconBtn tip="like" onClick={handleLikeScream}>
-      <FavoriteBorderIcon color="primary" />
-    </IconBtn>
-  );
-  const deleteButton =
-    user.isAuthenticated && userHandle === user.credentials.handle ? (
-      <DeleteScream screamId={id} />
-    ) : null;
+
   return (
     <div>
       <Card className={classes.card}>
@@ -90,7 +67,9 @@ const Scream = ({
             >
               {userHandle}
             </Typography>
-            {deleteButton}
+            {!user.loading ? (
+              <DeleteScream user={user} screamId={id} userHandle={userHandle} />
+            ) : null}
             <Typography
               variant="caption"
               component="div"
@@ -104,17 +83,27 @@ const Scream = ({
           </div>
           <div style={{ margin: "32px 0 0 -12px", display: "flex" }}>
             <span style={{ flex: 1 }}>
-              {likeButton}
+              <LikeScreamBtn screamId={id} />
               <span>{likeCount}</span>
             </span>
             <span style={{ flex: 1 }}>
               <IconBtn tip="comments">
                 <ChatIcon color="primary" />
               </IconBtn>
-              <span>{1} comments</span>
+              <span>{commentCount} comments</span>
             </span>
             <span>
-              <ScreamDialog screamId={id} userHandle={userHandle} />
+              <ScreamDialog
+                screamProps={{
+                  body,
+                  createdAt,
+                  userImage,
+                  userHandle,
+                  id,
+                  likeCount,
+                  commentCount
+                }}
+              />
             </span>
           </div>
         </div>

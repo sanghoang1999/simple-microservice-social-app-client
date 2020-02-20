@@ -5,7 +5,6 @@ import Profile from "../Profile/Profile";
 import { getAllScreams, getPaginationScream } from "../../actions/scream";
 import axios from "axios";
 import { connect } from "react-redux";
-import ScreamSkeleton from "../../utils/ScreamSkeleton";
 import { SkeletonScream } from "../../utils/SkeletonScream";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";

@@ -1,5 +1,6 @@
 import {
   GET_SCREAMS,
+  POST_COMMENT,
   LIKE_SCREAM,
   UNLIKE_SCREAM,
   DELETE_SCREAM,
@@ -8,7 +9,8 @@ import {
   SET_ALERT,
   GET_SCREAM,
   POST_SCREAM,
-  CLEAR_SCREAM
+  CLEAR_SCREAM,
+  STOP_LOADING_UI
 } from "../actions/type";
 import axios from "axios";
 import { setMessage } from "./message";
@@ -90,12 +92,14 @@ export const postScream = newScream => async dispatch => {
       payload: res.data
     });
     dispatch(setMessage("Post a scream successfully", "success"));
+    return null;
   } catch (error) {
     console.log(error);
     dispatch({
       type: SET_ALERT,
       payload: error.response.data.errors[0]
     });
+    return error.response.data.errors[0];
   }
 };
 export const getScream = screamId => async dispatch => {
@@ -103,8 +107,30 @@ export const getScream = screamId => async dispatch => {
     const res = await axios.get(`/scream/${screamId}`);
     console.log(res.data);
     dispatch({
+      type: STOP_LOADING_UI
+    });
+    dispatch({
       type: GET_SCREAM,
       payload: res.data
+    });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: SET_ALERT,
+      payload: error
+    });
+  }
+};
+export const postComment = (body, screamId) => async dispatch => {
+  try {
+    const res = await axios.post(`/scream/${screamId}/comment`, body);
+    console.log(res.data);
+    dispatch({
+      type: POST_COMMENT,
+      payload: {
+        data: res.data,
+        screamId: screamId
+      }
     });
   } catch (error) {
     console.log(error);
