@@ -6,6 +6,7 @@ import {
   POST_SCREAM,
   GET_SCREAM,
   CLEAR_SCREAM,
+  CLEAR_SCREAMS,
   POST_COMMENT
 } from "../actions/type";
 
@@ -86,6 +87,13 @@ export default function(state = initialState, action) {
             ? { ...scream, commentCount: (scream.commentCount += 1) }
             : scream
         )
+      };
+    }
+    case CLEAR_SCREAMS: {
+      return {
+        ...state,
+        screams: [],
+        loading: true
       };
     }
   }

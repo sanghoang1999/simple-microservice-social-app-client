@@ -8,6 +8,13 @@ import { connect } from "react-redux";
 import { SkeletonScream } from "../../utils/SkeletonScream";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import store from "../../store";
+import { CLEAR_SCREAMS } from "../../actions/type";
+
+store.dispatch({
+  type: CLEAR_SCREAMS
+});
+
 const Home = ({
   scream: { numPage, loading, screams },
   getAllScreams,
@@ -17,6 +24,9 @@ const Home = ({
   const [openAddScream, setOpenAddScream] = useState(false);
   let [page, setPage] = useState(1);
   useEffect(() => {
+    store.dispatch({
+      type: CLEAR_SCREAMS
+    });
     getPaginationScream(5, page);
   }, []);
   const fetchMoreData = () => {
@@ -47,10 +57,7 @@ const Home = ({
         )}
       </Grid>
       <Grid item sm={4} sx={12}>
-        <Profile
-          openEditProfile={openEditProfile}
-          onClikEditProfile={() => setOpenEditProfile(!openEditProfile)}
-        />
+        <Profile />
       </Grid>
     </Grid>
   );

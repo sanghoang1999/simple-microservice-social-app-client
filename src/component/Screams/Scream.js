@@ -60,7 +60,7 @@ const Scream = ({
           <div>
             <Typography
               component={Link}
-              to={`/users/${userHandle}`}
+              to={`/user/${userHandle}`}
               variant="subtitle1"
               gutterBottom
               color="primary"

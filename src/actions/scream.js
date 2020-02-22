@@ -10,6 +10,7 @@ import {
   GET_SCREAM,
   POST_SCREAM,
   CLEAR_SCREAM,
+  CLEAR_SCREAMS,
   STOP_LOADING_UI
 } from "../actions/type";
 import axios from "axios";
@@ -17,6 +18,9 @@ import { setMessage } from "./message";
 import React from "react";
 
 export const getAllScreams = () => async dispatch => {
+  dispatch({
+    type: CLEAR_SCREAMS
+  });
   try {
     const res = await axios.get("/scream");
     dispatch({
