@@ -20,8 +20,11 @@ a{
 .nav-auth svg {
   color:white;
 }
+.nav-auth {
+  display: flex;
+}
 .nav-auth-wrap-icon {
-  display: inline-block;
+  display: flex;
   margin-right: 10px;
 }
 .input-comment::placeholder {

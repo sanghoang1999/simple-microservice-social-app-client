@@ -45,7 +45,8 @@ const Scream = ({
     likeCount,
     commentCount
   },
-  user
+  user,
+  openDialog
 }) => {
   const low_image = userImage.replace("_high", "_low");
   const classes = useStyles();
@@ -103,6 +104,7 @@ const Scream = ({
                   likeCount,
                   commentCount
                 }}
+                openDialog={openDialog}
               />
             </span>
           </div>

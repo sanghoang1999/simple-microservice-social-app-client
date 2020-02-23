@@ -52,9 +52,13 @@ const useStyles = makeStyles(theme => ({
 const ScreamDialog = ({
   screamProps,
   screamFromRedux: { scream },
-  getScream
+  getScream,
+  openDialog,
+  user: { isAuthenticated }
 }) => {
   const classes = useStyles();
+  const [oldPath, setOldPath] = useState("");
+  const [newPath, setNewPath] = useState("");
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -62,12 +66,27 @@ const ScreamDialog = ({
       getScream(screamProps.id);
     }
   }, [open]);
-  useEffect(() => {});
+  useEffect(() => {
+    if (openDialog) {
+      setOpen(true);
+    }
+  }, []);
+  if (oldPath === newPath) {
+    setOldPath(`/user/${screamProps.userHandle}`);
+  }
   const handleClickOpen = () => {
+    let oldPath = window.location.pathname;
+    const newPath = `/user/${screamProps.userHandle}/scream/${screamProps.id}`;
+    console.log(oldPath, newPath);
+
+    setOldPath(oldPath);
+    setNewPath(newPath);
+    window.history.pushState(null, null, newPath);
     setOpen(true);
   };
 
   const handleClose = () => {
+    window.history.pushState(null, null, oldPath);
     setOpen(false);
     store.dispatch({
       type: "CLEAR_SCREAM"
@@ -135,7 +154,9 @@ const ScreamDialog = ({
           </Grid>
           {scream !== null ? (
             <div className={classes.cmtScollBar}>
-              <PostComment screamId={screamProps.id} />
+              {isAuthenticated ? (
+                <PostComment screamId={screamProps.id} />
+              ) : null}
               {scream.comments.map((comment, index) => (
                 <Comment comment={comment} key={index} />
               ))}
@@ -152,7 +173,7 @@ const ScreamDialog = ({
 };
 const mapStateToProps = state => ({
   screamFromRedux: state.scream,
-  user: state.auth.credential
+  user: state.auth
 });
 
 export default connect(mapStateToProps, { getScream })(ScreamDialog);

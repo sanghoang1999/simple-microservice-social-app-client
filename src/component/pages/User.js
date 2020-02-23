@@ -14,7 +14,7 @@ const User = ({
   scream: { screams, loading },
   profile,
   match: {
-    params: { handle }
+    params: { handle, screamId }
   }
 }) => {
   useEffect(() => {
@@ -28,8 +28,14 @@ const User = ({
         ) : (
           (screams = null ? (
             <p>No screams from this user</p>
+          ) : screamId === null ? (
+            screams.map(scream => <Scream scream={scream} key={scream.id} />)
           ) : (
-            screams.map(scream => <Scream scream={scream} />)
+            screams.map(scream => {
+              if (scream.id !== screamId)
+                return <Scream scream={scream} key={scream.id} />;
+              else return <Scream scream={scream} key={scream.id} openDialog />;
+            })
           ))
         )}
       </Grid>

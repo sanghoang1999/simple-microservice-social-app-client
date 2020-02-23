@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState } from "react";
+import React, { Component, Fragment, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import Moment from "react-moment";
@@ -85,9 +85,7 @@ const Profile = ({
     loading,
     isAuthenticated
   },
-  uploadImage,
-  openEditProfile,
-  onClikEditProfile
+  uploadImage
 }) => {
   const [isUploaded, setIsUploaded] = useState(false);
   const classes = useStyles();
@@ -138,7 +136,7 @@ const Profile = ({
             to={`/users/${handle}`}
             color="primary"
             variant="h5"
-            gutterBottom
+            gutterBottome
           >
             @{handle}
           </Typography>
@@ -170,10 +168,7 @@ const Profile = ({
               Joined <Moment format="DD/MM/YYYY">{createdAt}</Moment>
             </span>
           </div>
-          <EditDetail
-            openEditProfile={openEditProfile}
-            onClikEditProfile={onClikEditProfile}
-          />
+          <EditDetail />
         </CardContent>
       </Card>
     ) : (

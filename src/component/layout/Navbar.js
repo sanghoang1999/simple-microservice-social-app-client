@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { IconBtn } from "../../utils/IconBtn";
 import PostScream from "../Screams/PostScream";
+import Notificatoins from "./Notifications";
 //MT stuff
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -16,7 +17,6 @@ import Typography from "@material-ui/core/Typography";
 // icon
 import AddIcon from "@material-ui/icons/Add";
 import HomeIcon from "@material-ui/icons/Home";
-import Notifications from "@material-ui/icons/Notifications";
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex"
@@ -57,7 +57,7 @@ const Navbar = ({ isAuthenticated, logout }) => {
             size="large"
             color="inherit"
             component={Link}
-            to="home"
+            to="/home"
           >
             emvuidi
           </Button>
@@ -83,9 +83,9 @@ const Navbar = ({ isAuthenticated, logout }) => {
                       <HomeIcon color="primary" />
                     </IconBtn>
                   </Link>
-                  <IconBtn tip="Notifications">
-                    <Notifications color="primary" />
-                  </IconBtn>
+                  <div style={{ display: "inline" }}>
+                    <Notificatoins />
+                  </div>
                 </div>
                 <Button color="inherit" component={Link} to="/home">
                   <Typography
