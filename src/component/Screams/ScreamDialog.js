@@ -54,7 +54,6 @@ const ScreamDialog = ({
   screamFromRedux: { scream },
   getScream,
   openDialog,
-  setOpenDialog,
   user: { isAuthenticated }
 }) => {
   const classes = useStyles();
@@ -88,7 +87,6 @@ const ScreamDialog = ({
 
   const handleClose = () => {
     window.history.pushState(null, null, oldPath);
-    setOpenDialog();
     setOpen(false);
     store.dispatch({
       type: "CLEAR_SCREAM"

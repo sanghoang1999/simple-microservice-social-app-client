@@ -9,6 +9,7 @@ import {
   SET_ALERT,
   REMOVE_ALERT,
   CLEAR_PROFILE,
+  MARK_READ_NOTIFICATIONS,
   GET_SCREAMS,
   CLEAR_SCREAMS,
   GET_PROFILE
@@ -54,6 +55,17 @@ export const getUserDetails = handle => async dispatch => {
     dispatch({
       type: GET_PROFILE,
       payload: res.data.user
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const markReadNotis = notifications => async dispatch => {
+  try {
+    const res = await axios.post(`/user/notifications`, notifications);
+    console.log(res.data);
+    dispatch({
+      type: MARK_READ_NOTIFICATIONS
     });
   } catch (error) {
     console.log(error);

@@ -3,6 +3,7 @@ import {
   POST_COMMENT,
   LIKE_SCREAM,
   UNLIKE_SCREAM,
+  GET_LIST_LIKE,
   DELETE_SCREAM,
   LIKE_ERROR,
   REMOVE_ALERT,
@@ -43,6 +44,7 @@ export const getPaginationScream = (pageSize, pageNumber) => async dispatch => {
     console.log(error);
   }
 };
+
 export const likeScream = screamID => async dispatch => {
   console.log(screamID);
   try {
@@ -135,6 +137,22 @@ export const postComment = (body, screamId) => async dispatch => {
         data: res.data,
         screamId: screamId
       }
+    });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: SET_ALERT,
+      payload: error.response.data
+    });
+  }
+};
+
+export const getListLike = screamId => async dispatch => {
+  try {
+    const res = await axios.get(`/scream/${screamId}/listLike`);
+    dispatch({
+      type: GET_LIST_LIKE,
+      payload: res.data
     });
   } catch (error) {
     console.log(error);

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import ListLike from "./ListLike";
 import DeleteScream from "./DeleteScream";
 import ScreamDialog from "./ScreamDialog";
 import Card from "@material-ui/core/Card";
@@ -33,6 +34,14 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between"
+  },
+  likeWrap: {
+    flex: 1,
+    display: "flex",
+    alignItems: "center"
+  },
+  likeCount: {
+    marginLeft: 10
   }
 }));
 const Scream = ({
@@ -84,9 +93,13 @@ const Scream = ({
             <Typography variant="body2">{body}</Typography>
           </div>
           <div style={{ margin: "32px 0 0 -12px", display: "flex" }}>
-            <span style={{ flex: 1 }}>
+            <span className={classes.likeWrap}>
               <LikeScreamBtn screamId={id} />
-              <span>{likeCount}</span>
+              <ListLike
+                className={likeCount}
+                screamId={id}
+                likeCount={likeCount}
+              />
             </span>
             <span style={{ flex: 1 }}>
               <IconBtn tip="comments">
@@ -106,7 +119,6 @@ const Scream = ({
                   commentCount
                 }}
                 openDialog={openDialog}
-                setOpenDialog={() => setOpenDialog()}
               />
             </span>
           </div>

@@ -4,6 +4,7 @@ import {
   UNLIKE_SCREAM,
   DELETE_SCREAM,
   POST_SCREAM,
+  GET_LIST_LIKE,
   GET_SCREAM,
   CLEAR_SCREAM,
   CLEAR_SCREAMS,
@@ -94,6 +95,11 @@ export default function(state = initialState, action) {
         ...state,
         screams: [],
         loading: true
+      };
+    }
+    case GET_LIST_LIKE: {
+      return {
+        ...state
       };
     }
   }

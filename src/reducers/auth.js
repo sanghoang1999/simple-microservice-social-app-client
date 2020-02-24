@@ -7,7 +7,8 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   LIKE_SCREAM,
-  UNLIKE_SCREAM
+  UNLIKE_SCREAM,
+  MARK_READ_NOTIFICATIONS
 } from "../actions/type";
 
 const initialState = {
@@ -15,7 +16,8 @@ const initialState = {
   isAuthenticated: false,
   loading: true,
   credentials: {},
-  likes: []
+  likes: [],
+  notifications: []
 };
 export default function(state = initialState, action) {
   const { type, payload } = action;
@@ -104,6 +106,15 @@ export default function(state = initialState, action) {
         likes: state.likes.filter(
           like => like.screamId != action.payload.screamId
         )
+      };
+    }
+    case MARK_READ_NOTIFICATIONS: {
+      return {
+        ...state,
+        notifications: state.notifications.map(noti => {
+          noti.read = true;
+          return noti;
+        })
       };
     }
   }

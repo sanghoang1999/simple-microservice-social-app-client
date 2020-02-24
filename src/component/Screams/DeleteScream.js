@@ -24,7 +24,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 const DeleteScream = ({ user, deleteScream, screamId, userHandle }) => {
-  console.log("delete ne");
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {

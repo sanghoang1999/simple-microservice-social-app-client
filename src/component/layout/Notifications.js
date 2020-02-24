@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import { editUserDetails } from "../../actions/user";
+import { markReadNotis } from "../../actions/user";
 import NotificationItem from "./NotificationItem";
 import Typography from "@material-ui/core/Typography";
 //MUI
@@ -33,13 +33,18 @@ const useStyles = makeStyles(theme => ({
 
 const Notifications = ({
   userData: { loading, notifications },
-  editUserDetails
+  markReadNotis
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  let listNotisIdNoRead = notifications
+    .filter(noti => noti.read === false)
+    .map(item => item.notificationId);
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
+    if (listNotisIdNoRead.length !== 0) {
+      markReadNotis(listNotisIdNoRead);
+    }
   };
 
   const handleClose = () => {
@@ -47,12 +52,11 @@ const Notifications = ({
   };
 
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
   return (
     <div>
       <IconBtn tip="Notifications" onClick={handleClick}>
         <Badge
-          badgeContent={!loading ? notifications.length : 0}
+          badgeContent={!loading ? listNotisIdNoRead.length : 0}
           color="secondary"
         >
           <Notification color="primary" />
@@ -104,4 +108,4 @@ const mapStateToProps = state => ({
   userData: state.auth
 });
 
-export default connect(mapStateToProps, { editUserDetails })(Notifications);
+export default connect(mapStateToProps, { markReadNotis })(Notifications);
