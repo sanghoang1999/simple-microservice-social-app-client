@@ -54,6 +54,7 @@ const ScreamDialog = ({
   screamFromRedux: { scream },
   getScream,
   openDialog,
+  setOpenDialog,
   user: { isAuthenticated }
 }) => {
   const classes = useStyles();
@@ -70,7 +71,7 @@ const ScreamDialog = ({
     if (openDialog) {
       setOpen(true);
     }
-  }, []);
+  }, [openDialog]);
   if (oldPath === newPath) {
     setOldPath(`/user/${screamProps.userHandle}`);
   }
@@ -87,12 +88,14 @@ const ScreamDialog = ({
 
   const handleClose = () => {
     window.history.pushState(null, null, oldPath);
+    setOpenDialog();
     setOpen(false);
     store.dispatch({
       type: "CLEAR_SCREAM"
     });
   };
-
+  console.log(open);
+  console.log(openDialog);
   return (
     <div style={{ display: "inline-block" }}>
       <IconBtn tip="Expand scream" onClick={handleClickOpen}>

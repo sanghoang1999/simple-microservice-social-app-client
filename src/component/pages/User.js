@@ -17,6 +17,8 @@ const User = ({
     params: { handle, screamId }
   }
 }) => {
+  const [openDialog, setOpenDialog] = useState(true);
+  console.log(screamId);
   useEffect(() => {
     getUserDetails(handle);
   }, []);
@@ -34,7 +36,17 @@ const User = ({
             screams.map(scream => {
               if (scream.id !== screamId)
                 return <Scream scream={scream} key={scream.id} />;
-              else return <Scream scream={scream} key={scream.id} openDialog />;
+              else
+                return (
+                  <Scream
+                    scream={scream}
+                    key={scream.id}
+                    openDialog={openDialog}
+                    setOpenDialog={() => {
+                      setOpenDialog(false);
+                    }}
+                  />
+                );
             })
           ))
         )}

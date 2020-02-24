@@ -11,14 +11,12 @@ import Moment from "react-moment";
 const useStyles = makeStyles(theme => ({
   commentWrapper: {
     display: "flex",
-    marginBottom: 13
+    backgroundColor: "#f2f3f5",
+    borderBottom: "1px solid #00000017",
+    padding: "6px 0 6px 13px"
   },
   input: {
-    borderRadius: "25px",
-    border: "1px solid white",
-    backgroundColor: "#f2f3f5",
-    outline: "none",
-    marginLeft: "7px",
+    marginLeft: "2px",
     paddingLeft: 8,
     paddingRight: 40
   },
@@ -49,33 +47,41 @@ const NotificationItem = ({
 }) => {
   const classes = useStyles();
   return (
-    <div className={classes.commentWrapper}>
-      <Avatar src={userImage} className={classes.avatar} />
+    <Link to={`/user/${recipient}/scream/${screamId}`}>
+      <div className={classes.commentWrapper}>
+        <Avatar src={userImage} className={classes.avatar} />
 
-      <div className={classes.input}>
-        <div>
+        <div className={classes.input}>
+          <div>
+            <Typography
+              color="primary"
+              variant="body1"
+              component="span"
+              className={classes.userName}
+            >
+              {sender}
+            </Typography>
+            <Typography
+              className={classes.body}
+              variant="body1"
+              component="span"
+            >
+              {type === "like"
+                ? "has just liked on your scream"
+                : "has just commented on your scream"}
+            </Typography>
+          </div>
           <Typography
-            color="primary"
-            variant="body1"
-            component="span"
-            className={classes.userName}
+            className={classes.createdAt}
+            component="div"
+            variant="caption"
+            color="textSecondary"
           >
-            {recipient}
-          </Typography>
-          <Typography className={classes.body} variant="body1" component="span">
-            {type === "like" ? "Liked your scream" : "Commented your scream"}
+            <Moment fromNow>{createdAt}</Moment>
           </Typography>
         </div>
-        <Typography
-          className={classes.createdAt}
-          component="div"
-          variant="caption"
-          color="textSecondary"
-        >
-          <Moment fromNow>{createdAt}</Moment>
-        </Typography>
       </div>
-    </div>
+    </Link>
   );
 };
 

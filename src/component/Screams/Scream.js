@@ -46,7 +46,8 @@ const Scream = ({
     commentCount
   },
   user,
-  openDialog
+  openDialog,
+  setOpenDialog
 }) => {
   const low_image = userImage.replace("_high", "_low");
   const classes = useStyles();
@@ -105,6 +106,7 @@ const Scream = ({
                   commentCount
                 }}
                 openDialog={openDialog}
+                setOpenDialog={() => setOpenDialog()}
               />
             </span>
           </div>

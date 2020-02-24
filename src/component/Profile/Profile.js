@@ -136,7 +136,7 @@ const Profile = ({
             to={`/users/${handle}`}
             color="primary"
             variant="h5"
-            gutterBottome
+            gutterBottom
           >
             @{handle}
           </Typography>
