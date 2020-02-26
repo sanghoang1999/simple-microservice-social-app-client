@@ -4,11 +4,21 @@ import Scream from "../Screams/Scream";
 import Profile from "../Profile/Profile";
 import { getUserDetails } from "../../actions/user";
 import axios from "axios";
+import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { SkeletonScream } from "../../utils/SkeletonScream";
 import StaticProfile from "../Profile/StaticProfile";
 import ProfileSkeleton from "../../utils/ProfileSkeleton";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import CircularProgress from "@material-ui/core/CircularProgress";
+const useStyles = makeStyles(theme => ({
+  screamWrap: {
+    [theme.breakpoints.down("sm")]: {
+      padding: "0 5px"
+    }
+  }
+}));
+
 const User = ({
   getUserDetails,
   scream: { screams, loading },
@@ -17,14 +27,22 @@ const User = ({
     params: { handle, screamId }
   }
 }) => {
+  const classes = useStyles();
+  const matches = useMediaQuery("(min-width:600px)");
   const [openDialog, setOpenDialog] = useState(true);
   console.log(screamId);
   useEffect(() => {
     getUserDetails(handle);
-  }, []);
+  }, [handle]);
   return (
     <Grid container spacing={2}>
-      <Grid item sm={8} sx={12}>
+      <Grid
+        item
+        sm={8}
+        sx={12}
+        className={classes.screamWrap}
+        style={{ width: "100%" }}
+      >
         {loading ? (
           <SkeletonScream />
         ) : (
@@ -41,23 +59,23 @@ const User = ({
                   <Scream
                     scream={scream}
                     key={scream.id}
-                    openDialog={openDialog}
-                    setOpenDialog={() => {
-                      setOpenDialog(false);
-                    }}
+                    openDialog
+                    rdNum={Math.random() * 10000000}
                   />
                 );
             })
           ))
         )}
       </Grid>
-      <Grid item sm={4} sx={12}>
-        {profile == null ? (
-          <ProfileSkeleton />
-        ) : (
-          <StaticProfile profile={profile} />
-        )}
-      </Grid>
+      {matches ? (
+        <Grid item sm={4} sx={12}>
+          {profile == null ? (
+            <ProfileSkeleton />
+          ) : (
+            <StaticProfile profile={profile} />
+          )}
+        </Grid>
+      ) : null}
     </Grid>
   );
 };

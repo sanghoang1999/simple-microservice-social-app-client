@@ -11,6 +11,7 @@ import { IconBtn } from "../../utils/IconBtn";
 import { likeScream, unlikeScream } from "../../actions/scream";
 import LikeScreamBtn from "./LikeScreamBtn";
 import ProgressiveImage from "react-progressive-image";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 //MUI
 import ChatIcon from "@material-ui/icons/Chat";
 
@@ -22,7 +23,10 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     position: "relative",
     marginBottom: theme.spacing(2),
-    height: "180px"
+    height: "180px",
+    [theme.breakpoints.down("sm")]: {
+      padding: "0 5px"
+    }
   },
 
   image: {
@@ -56,11 +60,11 @@ const Scream = ({
   },
   user,
   openDialog,
-  setOpenDialog
+  rdNum
 }) => {
+  const matches = useMediaQuery("(min-width:600px)");
   const low_image = userImage.replace("_high", "_low");
   const classes = useStyles();
-
   return (
     <div>
       <Card className={classes.card}>
@@ -105,7 +109,9 @@ const Scream = ({
               <IconBtn tip="comments">
                 <ChatIcon color="primary" />
               </IconBtn>
-              <span>{commentCount} comments</span>
+              <span>
+                {commentCount} {matches ? "comments" : null}
+              </span>
             </span>
             <span>
               <ScreamDialog
@@ -119,6 +125,7 @@ const Scream = ({
                   commentCount
                 }}
                 openDialog={openDialog}
+                rdNum={rdNum}
               />
             </span>
           </div>

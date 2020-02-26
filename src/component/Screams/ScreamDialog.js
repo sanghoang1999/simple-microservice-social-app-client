@@ -12,11 +12,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import Avatar from "@material-ui/core/Avatar";
 import CloseIcon from "@material-ui/icons/Close";
+import BackIcon from "@material-ui/icons/ArrowBack";
+import Button from "@material-ui/core/Button";
 import UnfoldMore from "@material-ui/icons/UnfoldMore";
 import Grid from "@material-ui/core/Grid";
-
+import { useHistory } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
-
+import { Redirect } from "react-router-dom";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import DialogContent from "@material-ui/core/DialogContent";
 import ChatIcon from "@material-ui/icons/Chat";
 
@@ -27,8 +30,8 @@ import Typography from "@material-ui/core/Typography";
 import PostComment from "./PostComment";
 const useStyles = makeStyles(theme => ({
   avatar: {
-    width: "185px",
-    height: "185px"
+    width: "40px",
+    height: "40px "
   },
   closeBtn: {
     position: "absolute",
@@ -41,11 +44,36 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "space-between"
   },
   cmtScollBar: {
-    maxHeight: "300px",
     overflow: "auto",
-    "&::-webkit-scrollbar": {
-      display: "none"
+    [theme.breakpoints.up("sm")]: {
+      maxHeight: 300,
+      overflow: "auto",
+      "&::-webkit-scrollbar": {
+        display: "none"
+      }
     }
+  },
+  screamDialogWrap: {
+    padding: "10px 20px",
+    [theme.breakpoints.down("sm")]: {
+      padding: "10px 6px"
+    }
+  },
+  screamContent: {
+    borderBottom: "1px solid #00000038",
+    marginBottom: "15px"
+  },
+  info: {
+    marginLeft: 7,
+    lineHeight: 1
+  },
+  body: {
+    maxHeight: 150,
+    overflow: "auto"
+  },
+  top: {
+    display: "flex",
+    marginBottm: 5
   }
 }));
 
@@ -54,6 +82,7 @@ const ScreamDialog = ({
   screamFromRedux: { scream },
   getScream,
   openDialog,
+  rdNum,
   user: { isAuthenticated }
 }) => {
   const classes = useStyles();
@@ -61,6 +90,7 @@ const ScreamDialog = ({
   const [newPath, setNewPath] = useState("");
   const [open, setOpen] = useState(false);
 
+  const matches = useMediaQuery("(min-width:600px)");
   useEffect(() => {
     if (open) {
       getScream(screamProps.id);
@@ -70,7 +100,7 @@ const ScreamDialog = ({
     if (openDialog) {
       setOpen(true);
     }
-  }, [openDialog]);
+  }, [rdNum, openDialog]);
   if (oldPath === newPath) {
     setOldPath(`/user/${screamProps.userHandle}`);
   }
@@ -85,15 +115,36 @@ const ScreamDialog = ({
     setOpen(true);
   };
 
+  let history = useHistory();
   const handleClose = () => {
-    window.history.pushState(null, null, oldPath);
+    if (openDialog) {
+      history.push("home");
+      setOpen(false);
+    }
     setOpen(false);
+    window.history.pushState(null, null, oldPath);
     store.dispatch({
       type: "CLEAR_SCREAM"
     });
   };
-  console.log(open);
-  console.log(openDialog);
+  const mobileBack = !matches ? (
+    <Button
+      variant="contained"
+      style={{
+        display: "flex",
+        borderRadius: 0,
+        display: "flex",
+        padding: "6px 0"
+      }}
+      color="primary"
+      onClick={handleClose}
+    >
+      <BackIcon style={{ flex: 1 }} />
+      <div style={{ flex: 6, textAlign: "left" }}>
+        {screamProps.userHandle} - {screamProps.body}
+      </div>
+    </Button>
+  ) : null;
   return (
     <div style={{ display: "inline-block" }}>
       <IconBtn tip="Expand scream" onClick={handleClickOpen}>
@@ -102,8 +153,10 @@ const ScreamDialog = ({
       <Dialog
         open={open}
         onClose={handleClose}
-        fullWidth
+        fullScreen={!matches}
+        fullWidth="true"
         maxWidth="sm"
+        className={classes.dialog}
         aria-labelledby="form-dialog-title"
       >
         <IconButton
@@ -113,17 +166,16 @@ const ScreamDialog = ({
         >
           <CloseIcon fontSize="small" />
         </IconButton>
-        <DialogContent>
-          <Grid container style={{ padding: "10px 0 10px 0" }}>
-            <Grid item sm={5}>
+        {mobileBack}
+        <DialogContent className={classes.screamDialogWrap}>
+          <div container className={classes.screamContent}>
+            <div className={classes.top}>
               <Avatar src={screamProps.userImage} className={classes.avatar} />
-            </Grid>
-            <Grid item sm={7} className={classes.content}>
-              <div>
+              <div className={classes.info}>
                 <Typography
                   component={Link}
                   color="primary"
-                  variant="h5"
+                  variant="body1"
                   to={`/users/${screamProps.userHandle}`}
                   gutterBottom
                 >
@@ -137,22 +189,29 @@ const ScreamDialog = ({
                 >
                   <Moment format="DD/MM/YYYY">{screamProps.createdAt}</Moment>
                 </Typography>
-                <Typography variant="body2">{screamProps.body}</Typography>
-              </div>{" "}
-              <div style={{ margin: "32px 0 0 -12px", display: "flex" }}>
-                <span style={{ flex: 1 }}>
-                  <LikeScreamBtn screamId={screamProps.id} />
-                  <span>{screamProps.likeCount}</span>
-                </span>
-                <span style={{ flex: 1 }}>
-                  <IconBtn tip="comments">
-                    <ChatIcon color="primary" />
-                  </IconBtn>
-                  <span>{screamProps.commentCount} comments</span>
-                </span>
               </div>
-            </Grid>
-          </Grid>
+            </div>
+            <div className={classes.content}>
+              <Typography variant="body2" className={classes.body}>
+                {screamProps.body}
+              </Typography>
+            </div>
+
+            <div style={{ margin: "32px 0 0 -12px", display: "flex" }}>
+              <span style={{ flex: 1 }}>
+                <LikeScreamBtn screamId={screamProps.id} />
+                <span>{screamProps.likeCount}</span>
+              </span>
+              <span style={{ flex: 1 }}>
+                <IconBtn tip="comments">
+                  <ChatIcon color="primary" />
+                </IconBtn>
+                <span>
+                  {screamProps.commentCount} {matches ? " comments" : null}
+                </span>
+              </span>
+            </div>
+          </div>
           {scream !== null ? (
             <div className={classes.cmtScollBar}>
               {isAuthenticated ? (

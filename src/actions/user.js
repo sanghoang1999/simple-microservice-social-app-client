@@ -4,6 +4,7 @@ import {
   REGISTER_SUCCESS,
   USER_LOADED,
   AUTH_ERROR,
+  GET_NOTIFICATIONS,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   SET_ALERT,
@@ -18,6 +19,7 @@ import { setAlert } from "./alert";
 import React from "react";
 import { loadUser } from "./auth";
 import { setMessage } from "./message";
+import firebase from "../fb";
 export const uploadImage = formData => async dispatch => {
   try {
     await axios.post("/user/image", formData);
@@ -70,4 +72,15 @@ export const markReadNotis = notifications => async dispatch => {
   } catch (error) {
     console.log(error);
   }
+};
+
+export const realTimeNotifications = userHandle => async dispatch => {
+  var first = true;
+  const ref = firebase
+    .database()
+    .ref("notifications")
+    .limitToFirst(1);
+  ref.on("child_added", snap => {
+    console.log(snap.val());
+  });
 };

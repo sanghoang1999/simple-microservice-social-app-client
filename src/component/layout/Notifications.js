@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Notifications = ({
-  userData: { loading, notifications },
+  userData: { loading, notifications, credentials },
   markReadNotis
 }) => {
   const classes = useStyles();
@@ -108,4 +108,6 @@ const mapStateToProps = state => ({
   userData: state.auth
 });
 
-export default connect(mapStateToProps, { markReadNotis })(Notifications);
+export default connect(mapStateToProps, {
+  markReadNotis
+})(Notifications);

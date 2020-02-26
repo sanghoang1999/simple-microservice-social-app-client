@@ -3,6 +3,7 @@ import {
   REGISTER_FAIL,
   AUTH_ERROR,
   USER_LOADED,
+  GET_NOTIFICATIONS,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
@@ -115,6 +116,12 @@ export default function(state = initialState, action) {
           noti.read = true;
           return noti;
         })
+      };
+    }
+    case GET_NOTIFICATIONS: {
+      return {
+        ...state,
+        notifications: [payload, ...state.notifications]
       };
     }
   }

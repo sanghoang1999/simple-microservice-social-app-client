@@ -9,6 +9,7 @@ import { SkeletonScream } from "../../utils/SkeletonScream";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import store from "../../store";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { CLEAR_SCREAMS } from "../../actions/type";
 
 store.dispatch({
@@ -20,6 +21,7 @@ const Home = ({
   getAllScreams,
   getPaginationScream
 }) => {
+  const matches = useMediaQuery("(min-width:600px)");
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [openAddScream, setOpenAddScream] = useState(false);
   let [page, setPage] = useState(1);
@@ -33,9 +35,10 @@ const Home = ({
     setPage((page += 1));
     getPaginationScream(5, page);
   };
+
   return (
     <Grid container spacing={2}>
-      <Grid item sm={8} sx={12}>
+      <Grid item sm={8} sx={12} style={{ width: "100%" }}>
         {screams.length > 0 && !loading ? (
           <InfiniteScroll
             scrollThreshold={1}
@@ -56,9 +59,11 @@ const Home = ({
           <SkeletonScream />
         )}
       </Grid>
-      <Grid item sm={4} sx={12}>
-        <Profile />
-      </Grid>
+      {matches ? (
+        <Grid item sm={4} sx={12}>
+          <Profile />
+        </Grid>
+      ) : null}
     </Grid>
   );
 };

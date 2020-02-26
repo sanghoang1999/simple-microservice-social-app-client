@@ -22,7 +22,11 @@ const useStyles = makeStyles(theme => ({
     display: "flex"
   },
   menuButton: {
-    marginLeft: theme.spacing(4)
+    marginLeft: theme.spacing(4),
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block"
+    }
   },
   title: {
     flexGrow: 1,
@@ -31,7 +35,10 @@ const useStyles = makeStyles(theme => ({
   },
   brand: {
     fontSize: 25,
-    padding: 0
+    padding: 0,
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1rem"
+    }
   }
 }));
 
