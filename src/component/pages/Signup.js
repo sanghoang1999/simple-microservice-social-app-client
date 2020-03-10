@@ -6,7 +6,6 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { register } from "../../actions/auth";
@@ -62,14 +61,19 @@ const Signup = ({ history, register, errors }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   return (
-    <Grid container className={classes.form} spacing={2}>
+    <Grid container className={classes.form}>
       <Grid item sm></Grid>
       <Grid item sm>
         <img src={daisy} alt="daisy" />
         <Typography variant="h3" color="textSecondary">
           Siginup
         </Typography>
-        <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+        <form
+          noValidate
+          style={{ padding: 20 }}
+          autoComplete="off"
+          onSubmit={handleSubmit}
+        >
           <div>
             <TextField
               id="email"

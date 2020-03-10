@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import TextField from "@material-ui/core/TextField";
 import Avatar from "@material-ui/core/Avatar";
 import { makeStyles } from "@material-ui/core/styles";
-import Input from "@material-ui/core/Input";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 import { postComment } from "../../actions/scream";
 const useStyles = makeStyles(theme => ({
@@ -20,12 +16,17 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: "#f2f3f5",
     outline: "none",
     marginLeft: "7px",
+    fontSize: 16,
     paddingLeft: 16,
     "&::placeholder": {
       font: theme.typography.caption
     },
     "$::focus": {
-      font: theme.typography.fontWeightLight
+      font: theme.typography.fontWeightLight,
+      fontSize: 16
+    },
+    [theme.breakpoints.down("sm")]: {
+      backgroundColor: "inherit"
     }
   }
 }));

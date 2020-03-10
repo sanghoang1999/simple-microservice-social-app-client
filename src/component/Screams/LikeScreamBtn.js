@@ -5,10 +5,8 @@ import { deleteScream, likeScream, unlikeScream } from "../../actions/scream";
 import { IconBtn } from "../../utils/IconBtn";
 import { Link } from "react-router-dom";
 //MUI
-import { makeStyles } from "@material-ui/core/styles";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import Typography from "@material-ui/core/Typography";
 
 const LikeScreamBtn = ({ user, screamId, likeScream, unlikeScream }) => {
   const handleLikeScream = () => {

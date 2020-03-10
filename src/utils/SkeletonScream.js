@@ -14,7 +14,10 @@ const styles = makeStyles(theme => ({
   },
 
   image: {
-    flex: 1.5
+    flex: 1.5,
+    [theme.breakpoints.down("sm")]: {
+      flex: 3.5
+    }
   },
   detail: {
     flex: 3

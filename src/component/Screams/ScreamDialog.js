@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { getScream } from "../../actions/scream";
 import { IconBtn } from "../../utils/IconBtn";
-import DeleteScream from "./DeleteScream";
 import LikeScreamBtn from "./LikeScreamBtn";
 import Comment from "./Comment";
 import Moment from "react-moment";
@@ -15,10 +14,8 @@ import CloseIcon from "@material-ui/icons/Close";
 import BackIcon from "@material-ui/icons/ArrowBack";
 import Button from "@material-ui/core/Button";
 import UnfoldMore from "@material-ui/icons/UnfoldMore";
-import Grid from "@material-ui/core/Grid";
 import { useHistory } from "react-router-dom";
 import Dialog from "@material-ui/core/Dialog";
-import { Redirect } from "react-router-dom";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import DialogContent from "@material-ui/core/DialogContent";
 import ChatIcon from "@material-ui/icons/Chat";
@@ -83,12 +80,13 @@ const ScreamDialog = ({
   getScream,
   openDialog,
   rdNum,
+  open,
+  setOpen,
   user: { isAuthenticated }
 }) => {
   const classes = useStyles();
   const [oldPath, setOldPath] = useState("");
   const [newPath, setNewPath] = useState("");
-  const [open, setOpen] = useState(false);
 
   const matches = useMediaQuery("(min-width:600px)");
   useEffect(() => {

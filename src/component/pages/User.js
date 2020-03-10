@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Scream from "../Screams/Scream";
-import Profile from "../Profile/Profile";
 import { getUserDetails } from "../../actions/user";
-import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { SkeletonScream } from "../../utils/SkeletonScream";
 import StaticProfile from "../Profile/StaticProfile";
 import ProfileSkeleton from "../../utils/ProfileSkeleton";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import CircularProgress from "@material-ui/core/CircularProgress";
 const useStyles = makeStyles(theme => ({
   screamWrap: {
     [theme.breakpoints.down("sm")]: {

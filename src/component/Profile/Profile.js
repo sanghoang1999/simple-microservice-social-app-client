@@ -8,7 +8,6 @@ import EditDetail from "./EditDetail";
 // MUI stuff
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import MuiLink from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
 import Avatar from "@material-ui/core/Avatar";
 import CardContent from "@material-ui/core/CardContent";
@@ -18,10 +17,8 @@ import LocationOn from "@material-ui/icons/LocationOn";
 import LinkIcon from "@material-ui/icons/Link";
 import CalendarToday from "@material-ui/icons/CalendarToday";
 import EditIcon from "@material-ui/icons/Edit";
-import KeyboardReturn from "@material-ui/icons/KeyboardReturn";
 import { uploadImage } from "../../actions/user";
 import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
 import Fab from "@material-ui/core/Fab";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ProfileSkeleton from "../../utils/ProfileSkeleton";
@@ -168,7 +165,7 @@ const Profile = ({
               Joined <Moment format="DD/MM/YYYY">{createdAt}</Moment>
             </span>
           </div>
-          <EditDetail />
+          {isAuthenticated ? <EditDetail /> : null}
         </CardContent>
       </Card>
     ) : (

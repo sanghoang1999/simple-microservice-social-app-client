@@ -9,6 +9,7 @@ import home from "./component/pages/Home";
 import user from "./component/pages/User";
 import login from "./component/pages/Login";
 import signup from "./component/pages/Signup";
+import profile from "./component/Profile/Profile";
 import Navbar from "./component/layout/Navbar";
 import themeStyle from "./utils/theme";
 
@@ -45,6 +46,7 @@ const App = () => {
                 <Route exact path="/home" component={home} />
                 <Route exact path="/login" component={login} />
                 <Route exact path="/signup" component={signup} />
+                <Route exact path="/profile" component={profile} />
                 <Route exact path="/user/:handle" component={user} />
                 <Route
                   exact

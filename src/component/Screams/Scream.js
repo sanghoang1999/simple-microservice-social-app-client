@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
@@ -63,6 +63,7 @@ const Scream = ({
   rdNum
 }) => {
   const matches = useMediaQuery("(min-width:600px)");
+  const [open, setOpen] = useState(false);
   const low_image = userImage.replace("_high", "_low");
   const classes = useStyles();
   return (
@@ -106,7 +107,7 @@ const Scream = ({
               />
             </span>
             <span style={{ flex: 1 }}>
-              <IconBtn tip="comments">
+              <IconBtn tip="comments" onClick={setOpen.bind(true)}>
                 <ChatIcon color="primary" />
               </IconBtn>
               <span>
@@ -124,6 +125,8 @@ const Scream = ({
                   likeCount,
                   commentCount
                 }}
+                open={open}
+                setOpen={setOpen}
                 openDialog={openDialog}
                 rdNum={rdNum}
               />

@@ -3,7 +3,6 @@ import Grid from "@material-ui/core/Grid";
 import Scream from "../Screams/Scream";
 import Profile from "../Profile/Profile";
 import { getAllScreams, getPaginationScream } from "../../actions/scream";
-import axios from "axios";
 import { connect } from "react-redux";
 import { SkeletonScream } from "../../utils/SkeletonScream";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -37,7 +36,7 @@ const Home = ({
   };
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={matches ? "2" : "0"}>
       <Grid item sm={8} sx={12} style={{ width: "100%" }}>
         {screams.length > 0 && !loading ? (
           <InfiniteScroll
