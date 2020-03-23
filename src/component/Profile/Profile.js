@@ -78,7 +78,7 @@ const useStyles = makeStyles(theme => ({
 
 const Profile = ({
   user: {
-    credentials: { handle, createdAt, imageUrl, bio, website, location },
+    credentials: { handle, createdAt, imageurl, bio, website, location },
     loading,
     isAuthenticated
   },
@@ -105,7 +105,7 @@ const Profile = ({
         <div className={classes.avatarWrap}>
           <div className={classes.progress}>
             <Avatar
-              src={imageUrl}
+              src={imageurl}
               className={classes.avatar}
               style={isUploaded ? { opacity: 0.5 } : { opacity: 1 }}
             />

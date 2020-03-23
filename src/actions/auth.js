@@ -13,11 +13,13 @@ import {
 import { setAlert } from "./alert";
 import setAuthToken from "../utils/setAuthToken";
 
+//const base_url = "http://localhost:4000/social";
+const base_url = "https://social-api-gatway.herokuapp.com/social";
 export const loadUser = () => async dispatch => {
   if (localStorage.getItem("token")) {
     setAuthToken(localStorage.getItem("token"));
     try {
-      const res = await axios.get("/user/me");
+      const res = await axios.get(base_url + "/user/me");
       dispatch({
         type: USER_LOADED,
         payload: res.data
@@ -42,7 +44,8 @@ export const login = ({ email, password }) => async dispatch => {
       email,
       password
     };
-    const token = await axios.post("/user/login", data);
+    const token = await axios.post(base_url + "/user/login", data);
+    console.log(token);
     dispatch({
       type: REMOVE_ALERT
     });
@@ -53,6 +56,7 @@ export const login = ({ email, password }) => async dispatch => {
     dispatch(loadUser());
     return token;
   } catch (error) {
+    console.log(error);
     const errObject = error.response.data.errors.reduce((x, y) => {
       if (Object.keys(y).length > 1) {
         x[y.param] = y.msg;
@@ -81,7 +85,7 @@ export const register = ({ email, password, handle }) => async dispatch => {
       password,
       handle
     };
-    const token = await axios.post("/user/signup", data);
+    const token = await axios.post(base_url + "/user/signup", data);
     dispatch({
       type: REMOVE_ALERT
     });

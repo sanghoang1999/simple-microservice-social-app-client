@@ -9,7 +9,8 @@ import {
   LOGOUT,
   LIKE_SCREAM,
   UNLIKE_SCREAM,
-  MARK_READ_NOTIFICATIONS
+  MARK_READ_NOTIFICATIONS,
+  NOTIFICATIONS
 } from "../actions/type";
 
 const initialState = {
@@ -107,21 +108,6 @@ export default function(state = initialState, action) {
         likes: state.likes.filter(
           like => like.screamId != action.payload.screamId
         )
-      };
-    }
-    case MARK_READ_NOTIFICATIONS: {
-      return {
-        ...state,
-        notifications: state.notifications.map(noti => {
-          noti.read = true;
-          return noti;
-        })
-      };
-    }
-    case GET_NOTIFICATIONS: {
-      return {
-        ...state,
-        notifications: [payload, ...state.notifications]
       };
     }
   }

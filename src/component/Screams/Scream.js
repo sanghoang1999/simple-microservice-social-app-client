@@ -99,7 +99,7 @@ const Scream = ({
           </div>
           <div style={{ margin: "32px 0 0 -12px", display: "flex" }}>
             <span className={classes.likeWrap}>
-              <LikeScreamBtn screamId={id} />
+              <LikeScreamBtn screamId={id} handle={userHandle} />
               <ListLike
                 className={likeCount}
                 screamId={id}

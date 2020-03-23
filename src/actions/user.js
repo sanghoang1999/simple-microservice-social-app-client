@@ -19,10 +19,12 @@ import { setAlert } from "./alert";
 import React from "react";
 import { loadUser } from "./auth";
 import { setMessage } from "./message";
-import firebase from "../fb";
+//const base_url = "http://localhost:4000/social";
+const social_url = "https://asia-east2-micro-social-app.cloudfunctions.net/api";
+const base_url = "https://social-api-gatway.herokuapp.com/social";
 export const uploadImage = formData => async dispatch => {
   try {
-    await axios.post("/user/image", formData);
+    await axios.post(social_url + "/user/image", formData);
     dispatch(loadUser());
     dispatch(setMessage("Update image successfully", "success"));
   } catch (error) {
@@ -32,7 +34,7 @@ export const uploadImage = formData => async dispatch => {
 
 export const editUserDetails = formData => async dispatch => {
   try {
-    await axios.post("/user/detail", formData);
+    await axios.post(base_url + "/user/detail", formData);
     dispatch(loadUser());
     dispatch(setMessage("Update User' details successfully", "success"));
   } catch (error) {
@@ -48,7 +50,7 @@ export const getUserDetails = handle => async dispatch => {
     dispatch({
       type: CLEAR_PROFILE
     });
-    const res = await axios.get(`/user/${handle}`);
+    const res = await axios.get(base_url + `/user/${handle}`);
     console.log(res.data);
     dispatch({
       type: GET_SCREAMS,
@@ -64,7 +66,10 @@ export const getUserDetails = handle => async dispatch => {
 };
 export const markReadNotis = notifications => async dispatch => {
   try {
-    const res = await axios.post(`/user/notifications`, notifications);
+    const res = await axios.post(
+      base_url + `/user/notifications`,
+      notifications
+    );
     console.log(res.data);
     dispatch({
       type: MARK_READ_NOTIFICATIONS
@@ -72,15 +77,4 @@ export const markReadNotis = notifications => async dispatch => {
   } catch (error) {
     console.log(error);
   }
-};
-
-export const realTimeNotifications = userHandle => async dispatch => {
-  var first = true;
-  const ref = firebase
-    .database()
-    .ref("notifications")
-    .limitToFirst(1);
-  ref.on("child_added", snap => {
-    console.log(snap.val());
-  });
 };

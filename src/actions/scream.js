@@ -16,14 +16,16 @@ import {
 } from "../actions/type";
 import axios from "axios";
 import { setMessage } from "./message";
+import socket from "../utils/socketAdapter";
 import React from "react";
-
+//const base_url = "http://localhost:4000/social";
+const base_url = "https://social-api-gatway.herokuapp.com/social";
 export const getAllScreams = () => async dispatch => {
   dispatch({
     type: CLEAR_SCREAMS
   });
   try {
-    const res = await axios.get("/scream");
+    const res = await axios.get(base_url + "/scream");
     dispatch({
       type: GET_SCREAMS,
       payload: res.data
@@ -35,7 +37,9 @@ export const getAllScreams = () => async dispatch => {
 
 export const getPaginationScream = (pageSize, pageNumber) => async dispatch => {
   try {
-    const res = await axios.get(`/scream/page/${pageSize}/${pageNumber}`);
+    const res = await axios.get(
+      base_url + `/scream/page/${pageSize}/${pageNumber}`
+    );
     dispatch({
       type: GET_SCREAMS,
       payload: res.data
@@ -45,11 +49,22 @@ export const getPaginationScream = (pageSize, pageNumber) => async dispatch => {
   }
 };
 
-export const likeScream = screamID => async dispatch => {
-  console.log(screamID);
+export const likeScream = (screamID, handle) => async dispatch => {
+  var socketReq = new Promise((rs, rj) => {
+    try {
+      let io = socket.io;
+      io.emit("like", handle, screamID);
+      rs();
+    } catch (error) {
+      console.log(error);
+      rj(error);
+    }
+  });
   try {
-    const res = await axios.get(`/scream/${screamID}/like`);
-    console.log(res.data);
+    console.log(handle, screamID);
+    const res = await axios.get(base_url + `/scream/${screamID}/like`);
+    await socketReq;
+
     dispatch({
       type: LIKE_SCREAM,
       payload: res.data
@@ -58,10 +73,14 @@ export const likeScream = screamID => async dispatch => {
     console.log(error);
   }
 };
-export const unlikeScream = screamID => async dispatch => {
+export const unlikeScream = (screamID, handle) => async dispatch => {
   try {
-    const res = await axios.get(`/scream/${screamID}/unlike`);
-    console.log(res.data);
+    await Promise.all([
+      axios.get(base_url + `/scream/${screamID}/unlike`),
+      axios.delete(
+        `https://social-api-gatway.herokuapp.com/notifications/notifications/${screamID}/${handle}`
+      )
+    ]);
     dispatch({
       type: UNLIKE_SCREAM,
       payload: {
@@ -74,7 +93,7 @@ export const unlikeScream = screamID => async dispatch => {
 };
 export const deleteScream = screamID => async dispatch => {
   try {
-    const res = await axios.delete(`/scream/${screamID}`);
+    const res = await axios.delete(base_url + `/scream/${screamID}`);
     dispatch({
       type: DELETE_SCREAM,
       payload: {
@@ -88,8 +107,9 @@ export const deleteScream = screamID => async dispatch => {
 };
 export const postScream = newScream => async dispatch => {
   console.log(newScream);
+
   try {
-    const res = await axios.post("/scream", newScream);
+    const res = await axios.post(base_url + "/scream", newScream);
     dispatch({
       type: REMOVE_ALERT
     });
@@ -110,7 +130,7 @@ export const postScream = newScream => async dispatch => {
 };
 export const getScream = screamId => async dispatch => {
   try {
-    const res = await axios.get(`/scream/${screamId}`);
+    const res = await axios.get(base_url + `/scream/${screamId}`);
     console.log(res.data);
     dispatch({
       type: STOP_LOADING_UI
@@ -127,9 +147,23 @@ export const getScream = screamId => async dispatch => {
     });
   }
 };
-export const postComment = (body, screamId) => async dispatch => {
+export const postComment = (body, screamId, handle) => async dispatch => {
+  var socketReq = new Promise((rs, rj) => {
+    try {
+      let io = socket.io;
+      io.emit("comment", handle, screamId);
+      rs();
+    } catch (error) {
+      console.log(error);
+      rj(error);
+    }
+  });
   try {
-    const res = await axios.post(`/scream/${screamId}/comment`, body);
+    const res = await axios.post(
+      base_url + `/scream/${screamId}/comment`,
+      body
+    );
+    await socketReq;
     console.log(res.data);
     dispatch({
       type: POST_COMMENT,
@@ -149,7 +183,7 @@ export const postComment = (body, screamId) => async dispatch => {
 
 export const getListLike = screamId => async dispatch => {
   try {
-    const res = await axios.get(`/scream/${screamId}/listLike`);
+    const res = await axios.get(base_url + `/scream/${screamId}/listLike`);
     dispatch({
       type: GET_LIST_LIKE,
       payload: res.data

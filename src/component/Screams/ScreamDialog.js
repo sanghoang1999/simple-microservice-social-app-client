@@ -213,7 +213,10 @@ const ScreamDialog = ({
           {scream !== null ? (
             <div className={classes.cmtScollBar}>
               {isAuthenticated ? (
-                <PostComment screamId={screamProps.id} />
+                <PostComment
+                  screamId={screamProps.id}
+                  userHandle={screamProps.userHandle}
+                />
               ) : null}
               {scream.comments.map((comment, index) => (
                 <Comment comment={comment} key={index} />

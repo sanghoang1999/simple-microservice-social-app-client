@@ -8,13 +8,19 @@ import { Link } from "react-router-dom";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 
-const LikeScreamBtn = ({ user, screamId, likeScream, unlikeScream }) => {
+const LikeScreamBtn = ({
+  user,
+  screamId,
+  handle,
+  likeScream,
+  unlikeScream
+}) => {
   const handleLikeScream = () => {
     console.log(user.isAuthenticated);
-    likeScream(screamId);
+    likeScream(screamId, handle);
   };
   const HandleUnLikeScream = () => {
-    unlikeScream(screamId);
+    unlikeScream(screamId, user.credentials.handle);
   };
   const likeBtn = !user.isAuthenticated ? (
     <IconBtn tip="like">

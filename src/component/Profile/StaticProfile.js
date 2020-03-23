@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const StaticProfile = ({
-  profile: { handle, createdAt, imageUrl, bio, website, location },
+  profile: { handle, createdAt, imageurl, bio, website, location },
   uploadImage,
   user: { credentials },
   match
@@ -99,7 +99,7 @@ const StaticProfile = ({
       <div className={classes.avatarWrap}>
         <div className={classes.progress}>
           <Avatar
-            src={imageUrl}
+            src={imageurl}
             className={classes.avatar}
             style={isUploaded ? { opacity: 0.5 } : { opacity: 1 }}
           />

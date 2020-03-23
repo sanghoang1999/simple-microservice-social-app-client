@@ -22,9 +22,6 @@ import store from "./store";
 import setAuthToken from "./utils/setAuthToken";
 const theme = createMuiTheme(themeStyle);
 
-axios.defaults.baseURL =
-  "https://asia-east2-social-app-f685d.cloudfunctions.net/api";
-
 if (localStorage.getItem("token")) {
   setAuthToken(localStorage.getItem("token"));
 }

@@ -31,24 +31,32 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const PostComment = ({ user: { handle, imageUrl }, postComment, screamId }) => {
+const PostComment = ({
+  user: { handle, imageurl },
+  postComment,
+  screamId,
+  userHandle
+}) => {
   const classes = useStyles();
   const [body, SetBody] = useState("");
+  const [isComment, SetIsComemnt] = useState(false);
   const handleChange = e => {
     SetBody(e.target.value);
   };
   const handlePressEnter = e => {
     if (body !== "") {
       if (e.keyCode == 13) {
-        postComment({ body }, screamId).then(() => {
+        SetIsComemnt(true);
+        postComment({ body }, screamId, userHandle).then(() => {
           SetBody("");
+          SetIsComemnt(false);
         });
       }
     }
   };
   return (
     <div className={classes.commentWrapper}>
-      <Avatar src={imageUrl} className={classes.avatar} />
+      <Avatar src={imageurl} className={classes.avatar} />
 
       <input
         id="body"
@@ -59,6 +67,7 @@ const PostComment = ({ user: { handle, imageUrl }, postComment, screamId }) => {
         placeholder="Write comment..."
         onChange={handleChange}
         onKeyDown={handlePressEnter}
+        style={{ cursor: isComment ? "progress" : "inherit" }}
       />
     </div>
   );

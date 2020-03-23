@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import { markReadNotis } from "../../actions/user";
+import { markReadNotis } from "../../actions/notifications";
+import { getNotifications } from "../../actions/notifications";
 import NotificationItem from "./NotificationItem";
 import Typography from "@material-ui/core/Typography";
+import socket from "../../utils/socketAdapter";
+import store from "../../store";
+import { NOTIFICATIONS } from "../../actions/type";
 //MUI
 import Badge from "@material-ui/core/Badge";
 import Button from "@material-ui/core/Button";
@@ -32,14 +36,40 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Notifications = ({
-  userData: { loading, notifications, credentials },
-  markReadNotis
+  notis: { loading, notifications },
+  markReadNotis,
+  getNotifications
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  useEffect(() => {
+    let io = socket.io;
+
+    io.on("connect", () => {
+      console.log("emvuidiiiii");
+    });
+    io.on("notification_like", res => {
+      store.dispatch({
+        type: NOTIFICATIONS,
+        payload: res
+      });
+    });
+    io.on("notification_comment", res => {
+      store.dispatch({
+        type: NOTIFICATIONS,
+        payload: res
+      });
+    });
+    return () => {
+      io.close();
+    };
+  }, []);
+  useEffect(() => {
+    getNotifications();
+  }, []);
   let listNotisIdNoRead = notifications
     .filter(noti => noti.read === false)
-    .map(item => item.notificationId);
+    .map(item => item._id);
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
     if (listNotisIdNoRead.length !== 0) {
@@ -91,10 +121,7 @@ const Notifications = ({
               </Typography>
             ) : (
               notifications.map(item => (
-                <NotificationItem
-                  notification={item}
-                  key={item.notificationId}
-                />
+                <NotificationItem notification={item} key={item._id} />
               ))
             )
           ) : null}
@@ -105,9 +132,11 @@ const Notifications = ({
 };
 
 const mapStateToProps = state => ({
-  userData: state.auth
+  notis: state.notifications
 });
 
 export default connect(mapStateToProps, {
-  markReadNotis
+  markReadNotis,
+
+  getNotifications
 })(Notifications);

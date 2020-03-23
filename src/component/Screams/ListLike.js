@@ -77,7 +77,8 @@ const ListLike = ({ screamId, likeCount }) => {
   let res = null;
   const handleClickOpen = async () => {
     setOpen(true);
-    res = await axios.get(`/scream/${screamId}/listLike`);
+    const base_url = "http://localhost:4000/social";
+    res = await axios.get(base_url + `/scream/${screamId}/listLike`);
     console.log(res.data);
     setListUserLike(res.data);
     setLoading(false);
