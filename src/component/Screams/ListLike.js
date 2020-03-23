@@ -77,7 +77,7 @@ const ListLike = ({ screamId, likeCount }) => {
   let res = null;
   const handleClickOpen = async () => {
     setOpen(true);
-    const base_url = "http://localhost:4000/social";
+    const base_url = "https://social-api-gatway.herokuapp.com/social";
     res = await axios.get(base_url + `/scream/${screamId}/listLike`);
     console.log(res.data);
     setListUserLike(res.data);
