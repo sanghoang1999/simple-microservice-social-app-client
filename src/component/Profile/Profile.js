@@ -20,73 +20,74 @@ import EditIcon from "@material-ui/icons/Edit";
 import { uploadImage } from "../../actions/user";
 import Tooltip from "@material-ui/core/Tooltip";
 import Fab from "@material-ui/core/Fab";
+
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ProfileSkeleton from "../../utils/ProfileSkeleton";
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   avatar: {
     width: 150,
     height: 150,
-    marginTop: theme.spacing(1.5)
+    marginTop: theme.spacing(1.5),
   },
   card: {
-    textAlign: "center"
+    textAlign: "center",
   },
   avatarWrap: {
     display: "flex",
     justifyContent: "center",
-    position: "relative"
+    position: "relative",
   },
   location: {
     position: "relative",
     top: 5,
-    left: 5
+    left: 5,
   },
   location: {
     position: "relative",
     top: 7,
-    left: 2
+    left: 2,
   },
   calendar: {
     position: "relative",
     top: 6,
-    marginRight: 3
+    marginRight: 3,
   },
   buttons: {
     width: "70%",
     margin: "0 auto",
     display: "flex",
     marginTop: 10,
-    justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
   },
   paper: {
-    padding: "30px 0"
+    padding: "30px 0",
   },
   editImage: {
     position: "absolute",
     top: "76%",
-    right: "30%"
+    right: "30%",
   },
   progress: {
-    position: "relative"
+    position: "relative",
   },
   circular: {
     position: "absolute",
     top: "42%",
-    left: "37%"
-  }
+    left: "37%",
+  },
 }));
 
 const Profile = ({
   user: {
     credentials: { handle, createdAt, imageurl, bio, website, location },
     loading,
-    isAuthenticated
+    isAuthenticated,
   },
-  uploadImage
+  uploadImage,
 }) => {
   const [isUploaded, setIsUploaded] = useState(false);
   const classes = useStyles();
-  const handleImageChange = e => {
+  const handleImageChange = (e) => {
     const image = e.target.files[0];
     const formData = new FormData();
     formData.append("image", image, image.name);
@@ -199,11 +200,11 @@ const Profile = ({
 };
 
 Profile.propTypes = {
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
-  user: state.auth
+const mapStateToProps = (state) => ({
+  user: state.auth,
 });
 
 export default connect(mapStateToProps, { uploadImage })(Profile);

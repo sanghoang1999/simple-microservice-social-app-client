@@ -8,7 +8,7 @@ import io from "socket.io-client";
 function sockets() {}
 
 sockets.io = io.connect(
-  "https://sanghoang-notifications-sv.herokuapp.com/notifications",
+  "https://sanghoang-notifications-sv.herokuapp.com/socket/notifications",
   {
     query: "token=" + localStorage.getItem("token")
   }

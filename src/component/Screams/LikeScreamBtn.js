@@ -16,7 +16,7 @@ const LikeScreamBtn = ({
   unlikeScream
 }) => {
   const handleLikeScream = () => {
-    console.log(user.isAuthenticated);
+    console.log("mmmm", handle);
     likeScream(screamId, handle);
   };
   const HandleUnLikeScream = () => {

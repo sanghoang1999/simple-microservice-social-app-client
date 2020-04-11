@@ -197,7 +197,10 @@ const ScreamDialog = ({
 
             <div style={{ margin: "32px 0 0 -12px", display: "flex" }}>
               <span style={{ flex: 1 }}>
-                <LikeScreamBtn screamId={screamProps.id} />
+                <LikeScreamBtn
+                  screamId={screamProps.id}
+                  handle={screamProps.userHandle}
+                />
                 <span>{screamProps.likeCount}</span>
               </span>
               <span style={{ flex: 1 }}>

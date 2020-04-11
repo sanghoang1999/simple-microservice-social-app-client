@@ -6,6 +6,7 @@ import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import Alert from "./component/layout/AlertMessage";
 import home from "./component/pages/Home";
+import Chat from "./component/Chat/ChatLayout";
 import user from "./component/pages/User";
 import login from "./component/pages/Login";
 import signup from "./component/pages/Signup";
@@ -35,10 +36,10 @@ const App = () => {
       <MuiThemeProvider theme={theme}>
         <div className="App">
           <Router>
-            <Navbar />
-            <Alert />
+            {/* <Navbar />
+            <Alert /> */}
             <div className="container">
-              <Switch>
+              {/* <Switch>
                 <Route exact path="/" component={home} />
                 <Route exact path="/home" component={home} />
                 <Route exact path="/login" component={login} />
@@ -50,8 +51,9 @@ const App = () => {
                   path="/user/:handle/scream/:screamId"
                   component={user}
                 />
-              </Switch>
+              </Switch> */}
             </div>
+            <Chat />
           </Router>
         </div>
       </MuiThemeProvider>
