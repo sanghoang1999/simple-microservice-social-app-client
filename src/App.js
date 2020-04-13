@@ -36,22 +36,22 @@ const App = () => {
       <MuiThemeProvider theme={theme}>
         <div className="App">
           <Router>
-            {/* <Navbar />
-            <Alert /> */}
+            <Navbar />
+            <Alert />
             <div className="container">
-              {/* <Switch>
-                <Route exact path="/" component={home} />
-                <Route exact path="/home" component={home} />
+              <Switch>
+                {/* <Route exact path="/" component={home} />
+                <Route exact path="/home" component={home} /> */}
                 <Route exact path="/login" component={login} />
                 <Route exact path="/signup" component={signup} />
-                <Route exact path="/profile" component={profile} />
-                <Route exact path="/user/:handle" component={user} />
-                <Route
+                {/* <Route exact path="/profile" component={profile} />
+                <Route exact path="/user/:handle" component={user} /> */}
+                {/* <Route
                   exact
                   path="/user/:handle/scream/:screamId"
-                  component={user}
+                  component={user} */}
                 />
-              </Switch> */}
+              </Switch>
             </div>
             <Chat />
           </Router>

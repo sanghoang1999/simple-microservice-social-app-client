@@ -11,34 +11,30 @@ import store from "../../store";
 import { NOTIFICATIONS } from "../../actions/type";
 //MUI
 import Badge from "@material-ui/core/Badge";
-import Button from "@material-ui/core/Button";
 import Notification from "@material-ui/icons/Notifications";
 import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
 import { IconBtn } from "../../utils/IconBtn";
-import PropTypes from "prop-types";
 
-import CircularProgress from "@material-ui/core/CircularProgress";
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   notification: {
     padding: "0px 0px 3px 7px",
     borderBottom: "1px solid #00000017",
     fontWeight: 500,
-    fontSize: "0.85rem"
+    fontSize: "0.85rem",
   },
   menu: {},
   notiWrap: {
     paddingBottom: 10,
 
     minWidth: 200,
-    minHeight: 50
-  }
+    minHeight: 50,
+  },
 }));
 
 const Notifications = ({
   notis: { loading, notifications },
   markReadNotis,
-  getNotifications
+  getNotifications,
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -48,16 +44,16 @@ const Notifications = ({
     io.on("connect", () => {
       console.log("emvuidiiiii");
     });
-    io.on("notification_like", res => {
+    io.on("notification_like", (res) => {
       store.dispatch({
         type: NOTIFICATIONS,
-        payload: res
+        payload: res,
       });
     });
-    io.on("notification_comment", res => {
+    io.on("notification_comment", (res) => {
       store.dispatch({
         type: NOTIFICATIONS,
-        payload: res
+        payload: res,
       });
     });
     return () => {
@@ -68,9 +64,9 @@ const Notifications = ({
     getNotifications();
   }, []);
   let listNotisIdNoRead = notifications
-    .filter(noti => noti.read === false)
-    .map(item => item._id);
-  const handleClick = event => {
+    .filter((noti) => noti.read === false)
+    .map((item) => item._id);
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
     if (listNotisIdNoRead.length !== 0) {
       markReadNotis(listNotisIdNoRead);
@@ -99,11 +95,11 @@ const Notifications = ({
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "center"
+          horizontal: "center",
         }}
         transformOrigin={{
           vertical: "top",
-          horizontal: "right"
+          horizontal: "right",
         }}
         keepMounted
         open={Boolean(anchorEl)}
@@ -120,7 +116,7 @@ const Notifications = ({
                 You have no notifications
               </Typography>
             ) : (
-              notifications.map(item => (
+              notifications.map((item) => (
                 <NotificationItem notification={item} key={item._id} />
               ))
             )
@@ -131,12 +127,12 @@ const Notifications = ({
   );
 };
 
-const mapStateToProps = state => ({
-  notis: state.notifications
+const mapStateToProps = (state) => ({
+  notis: state.notifications,
 });
 
 export default connect(mapStateToProps, {
   markReadNotis,
 
-  getNotifications
+  getNotifications,
 })(Notifications);

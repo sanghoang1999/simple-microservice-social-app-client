@@ -1,49 +1,37 @@
 import React, { useMemo } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import Grid from "@material-ui/core/Grid";
 import { Link } from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import { deleteScream, likeScream, unlikeScream } from "../../actions/scream";
 import Moment from "react-moment";
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   commentWrapper: {
     display: "flex",
     backgroundColor: "#f2f3f5",
     borderBottom: "1px solid #00000017",
-    padding: "6px 0 6px 13px"
+    padding: "6px 0 6px 13px",
   },
   input: {
     marginLeft: "2px",
     paddingLeft: 8,
-    paddingRight: 40
+    paddingRight: 40,
   },
   userName: {
     marginRight: 5,
-    fontWeight: 500
+    fontWeight: 500,
   },
   body: {
     fontSize: "0.9rem",
     color: "black",
-    letterSpacing: 0
+    letterSpacing: 0,
   },
   createdAt: {
-    lineHeight: 1
-  }
+    lineHeight: 1,
+  },
 }));
 
 const NotificationItem = ({
-  notification: {
-    type,
-    recipient,
-    createdAt,
-    sender,
-    userImage,
-    screamId,
-    notificationId
-  }
+  notification: { type, recipient, createdAt, sender, userImage, screamId },
 }) => {
   const classes = useStyles();
   return (
