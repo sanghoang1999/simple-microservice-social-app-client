@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   offline: {
     width: 6,
     height: 6,
-    backgroundColor: "black",
+    backgroundColor: "#00000073",
     borderRadius: "50%",
   },
 }));
@@ -79,11 +79,7 @@ const ListUser = ({
                 <ListItem
                   button
                   onClick={() =>
-                    handleAddUserChat(
-                      [...listUserChat, { handle, imageurl, _id }],
-                      null,
-                      handle
-                    )
+                    handleAddUserChat(handle, imageurl, _id, status, true)
                   }
                   className={classes.listItem}
                 >
@@ -113,11 +109,7 @@ const ListUser = ({
                 <ListItem
                   button
                   onClick={() =>
-                    handleAddUserChat(
-                      [...listUserChat, { handle, imageurl, _id }],
-                      _id,
-                      null
-                    )
+                    handleAddUserChat(handle, imageurl, _id, null, false)
                   }
                   className={classes.listItem}
                 >
@@ -131,7 +123,7 @@ const ListUser = ({
                   <Typography className={classes.handle} variant="body2">
                     {handle}
                   </Typography>
-                  <span className={classes.status}>.</span>
+                  <span className={classes.online}>.</span>
                 </ListItem>
               </React.Fragment>
             ))}

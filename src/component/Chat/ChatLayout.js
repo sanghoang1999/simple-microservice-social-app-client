@@ -181,31 +181,6 @@ const ChatLayout = ({
             return newList;
           });
         });
-        io.on("list_mess", (mess, to, list) => {
-          console.log("mess");
-          // setListUserChat((list) => {
-          //   console.log(list);
-          //   let newList = list.map((user) => {
-          //     if (user.handle === to) {
-          //       user.messages = mess;
-          //     }
-          //     return user;
-          //   });
-          //   console.log("list");
-          //   console.log(newList);
-          //   return newList;
-          // });
-          // console.log(mess);
-          const newList = list.map((user) => {
-            if (user.handle === to) {
-              user.messages = mess;
-            }
-            return user;
-          });
-          console.log("list user chat");
-          console.log(newList);
-          setListUserChat(newList);
-        });
       });
     }
     return () => {
@@ -214,12 +189,31 @@ const ChatLayout = ({
       }
     };
   }, [isAuthenticated]);
-  const handleAddUserChat = (list, id, toUser) => {
-    if (id != null) {
-      console.log("add user ");
-      socket.emit("makeFriend", id);
+  const handleAddUserChat = (handleTo, imageurl, _id, status, isFriend) => {
+    console.log(handle, handleTo, imageurl, _id);
+    if (listUserChat.findIndex((item) => item._id === _id) === -1) {
+      if (!isFriend) {
+        console.log("add user ");
+        socket.emit("makeFriend", _id);
+      }
+      socket.emit("get_message", handle, handleTo, (cb) => {
+        setListUserChat([
+          ...listUserChat,
+          {
+            handle: handleTo,
+            imageurl,
+            _id,
+            status,
+            messages: cb,
+          },
+        ]);
+      });
     }
-    socket.emit("get_message", handle, toUser, list);
+  };
+  const handleCloseChat = (idUserTo) => {
+    const newList = listUserChat.filter((item) => item._id !== idUserTo);
+    setListUserChat(newList);
+    socket.emit("closeChat", idUserTo);
   };
   const sendMessage = (message, to) => {
     const newMess = {
@@ -227,9 +221,18 @@ const ChatLayout = ({
       to,
       message,
     };
-    console.log(socket);
+    if (newMess.from !== newMess.to) {
+      console.log(newMess.from, newMess.to);
+      console.log(listUserChat);
+      let newList = listUserChat.map((item) => {
+        if (item.handle == newMess.to) item.messages.push(newMess);
+        return item;
+      });
+
+      setListUserChat(newList);
+      console.log(listUserChat);
+    }
     socket.emit("sendmessage", newMess, listUserChat);
-    console.log(newMess);
   };
   return isAuthenticated ? (
     <div className={classes.layout}>
@@ -245,6 +248,7 @@ const ChatLayout = ({
             listUserChat={listUserChat}
             userInfo={userInfo}
             sendMessage={sendMessage}
+            handleCloseChat={handleCloseChat}
           />
         ))}
       </div>

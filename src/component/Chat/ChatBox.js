@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/appBar";
@@ -29,8 +29,8 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: "2px solid #00000017",
   },
   content: {
-    minHeight: 285,
-    maxHeight: 285,
+    height: 258,
+    maxHeight: 258,
     overflow: "auto",
   },
   info: {
@@ -52,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
     borderTop: "1px solid #00000029",
   },
   text: {
-    position: "absolute",
     bottom: 0,
     width: "100%",
   },
@@ -107,13 +106,15 @@ const useStyles = makeStyles((theme) => ({
   messageLeft: {
     padding: "6px 8px 6px 10px",
     background: "#f1f0f0",
-    borderRadius: 48,
+    borderRadius: 25,
+    wordBreak: "break-all",
     maxWidth: 136,
   },
   messageRight: {
     padding: "6px 8px 6px 10px",
     background: "#d696bb",
-    borderRadius: 48,
+    borderRadius: 25,
+    wordBreak: "break-all",
     maxWidth: 136,
     color: "white",
   },
@@ -130,13 +131,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const ChatBox = ({
-  userInfo: { handle, imageurl, _id, messages },
+  userInfo: { handle, imageurl, _id, messages, status },
   sendMessage,
   listUserChat,
+  handleCloseChat,
 }) => {
-  console.log(messages);
+  console.log(status, status === "online");
   const classes = useStyles();
+  const scrollBottom = useRef();
   const [mess, setMess] = useState("");
+  useEffect(() => {
+    let textHeight = 57;
+    const resizeObserver = new ResizeObserver((entries) => {
+      const heightChange = textHeight - entries[0].target.offsetHeight;
+      console.log(entries[0]);
+      entries[0].target.previousElementSibling.style.height =
+        entries[0].target.previousElementSibling.offsetHeight +
+        heightChange +
+        "px";
+      textHeight = entries[0].target.offsetHeight;
+    });
+
+    resizeObserver.observe(document.getElementById("emvuidi"));
+  }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      console.log("cc");
+      scrollBottom.current.scrollTo(0, scrollBottom.current.scrollHeight);
+    }, 0);
+  }, [listUserChat]);
   const handleKeyDown = (e) => {
     if (e.key == "Enter") {
       e.preventDefault();
@@ -150,7 +173,6 @@ const ChatBox = ({
     setMess(e.target.value);
   };
 
-  console.log(mess);
   return (
     <Card className={classes.card}>
       <div className={classes.header}>
@@ -160,21 +182,30 @@ const ChatBox = ({
             className={classes.avt}
             src={imageurl}
           />
-          <div className={classes.online}>
-            <div className={classes.inner}></div>
-          </div>
+          {status === "online" ? (
+            <div className={classes.online}>
+              <div className={classes.inner}></div>
+            </div>
+          ) : null}
         </div>
         <div className={classes.info}>
-          <Typography variant="body2">{handle}</Typography>
-          <Typography className={classes.status} variant="caption">
-            Online
+          <Typography
+            variant="body2"
+            style={{ marginTop: status === "online" ? 0 : 7 }}
+          >
+            {handle}
           </Typography>
+          {status === "online" ? (
+            <Typography className={classes.status} variant="caption">
+              Online
+            </Typography>
+          ) : null}
         </div>
-        <IconButton size="small">
+        <IconButton size="small" onClick={() => handleCloseChat(_id)}>
           <CloseIcon fontSize="small" color="primary" />
         </IconButton>
       </div>
-      <div className={classes.content}>
+      <div ref={scrollBottom} className={classes.content}>
         <div>
           {messages != null
             ? messages.map((mess) => (
@@ -187,9 +218,11 @@ const ChatBox = ({
                           className={classes.avtMess}
                           src={imageurl}
                         />
-                        <div className={classes.online}>
-                          <div className={classes.inner}></div>
-                        </div>
+                        {status === "online" ? (
+                          <div className={classes.online}>
+                            <div className={classes.inner}></div>
+                          </div>
+                        ) : null}
                       </div>
                       <div className={classes.infoMess}>
                         <Typography
@@ -225,7 +258,7 @@ const ChatBox = ({
             : null}
         </div>
       </div>
-      <div className={classes.text}>
+      <div id="emvuidi" className={classes.text}>
         <TextareaAutosize
           onChange={handleChange}
           onKeyDown={handleKeyDown}
