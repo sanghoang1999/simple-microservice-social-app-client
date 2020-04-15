@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     padding: 7,
     borderBottom: "2px solid #00000017",
+    minHeight: 40,
   },
   content: {
     height: 258,
@@ -57,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avtWrap: {
     position: "relative",
+    paddingLeft: 5,
   },
   online: {
     position: "absolute",
@@ -121,6 +123,8 @@ const useStyles = makeStyles((theme) => ({
   messContentRight: {
     display: "flex",
     justifyContent: "flex-end",
+    margin: "1px 0",
+    paddingRight: 5,
   },
   messContent: {
     display: "flex",
@@ -128,6 +132,11 @@ const useStyles = makeStyles((theme) => ({
   messTo: {
     display: "flex",
     alignItems: "flex-end",
+  },
+  messWrap: {
+    "&:last-child": {
+      marginBottom: 10,
+    },
   },
 }));
 const ChatBox = ({
@@ -140,6 +149,15 @@ const ChatBox = ({
   const classes = useStyles();
   const scrollBottom = useRef();
   const [mess, setMess] = useState("");
+  // useEffect(() => {
+  //   var a = document.getElementById("hehe");
+  //   a.addEventListener("input", (e) => {
+  //     e.target.addEventListener("propertychange", (e) => {
+  //       console.log("change");
+  //       console.log(e.target);
+  //     });
+  //   });
+  // }, []);
   useEffect(() => {
     let textHeight = 57;
     const resizeObserver = new ResizeObserver((entries) => {
@@ -152,7 +170,7 @@ const ChatBox = ({
       textHeight = entries[0].target.offsetHeight;
     });
 
-    resizeObserver.observe(document.getElementById("emvuidi"));
+    resizeObserver.observe(document.getElementById("emvuidi_" + _id));
   }, []);
   useEffect(() => {
     setTimeout(() => {
@@ -164,7 +182,7 @@ const ChatBox = ({
     if (e.key == "Enter") {
       e.preventDefault();
       if (mess.length !== 0) {
-        sendMessage(mess, handle, listUserChat);
+        sendMessage(mess, handle);
         setMess("");
       }
     }
@@ -201,12 +219,12 @@ const ChatBox = ({
             </Typography>
           ) : null}
         </div>
-        <IconButton size="small" onClick={() => handleCloseChat(_id)}>
+        <IconButton size="small" onClick={() => handleCloseChat(_id, handle)}>
           <CloseIcon fontSize="small" color="primary" />
         </IconButton>
       </div>
       <div ref={scrollBottom} className={classes.content}>
-        <div>
+        <div className={classes.messWrap}>
           {messages != null
             ? messages.map((mess) => (
                 <div className={classes.messWrap}>
@@ -258,7 +276,7 @@ const ChatBox = ({
             : null}
         </div>
       </div>
-      <div id="emvuidi" className={classes.text}>
+      <div id={`emvuidi_` + _id} className={classes.text}>
         <TextareaAutosize
           onChange={handleChange}
           onKeyDown={handleKeyDown}

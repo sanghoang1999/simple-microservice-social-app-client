@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import ChatBox from "./ChatBox";
 import ListUser from "./ListUser";
 import chatSocket from "../../utils/chatSocket";
 import { connect } from "react-redux";
+import axios from "axios";
 import socket from "socket.io-client";
 const messages = [
   {
@@ -68,6 +69,8 @@ const messages = [
     person: "/static/images/avatar/1.jpg",
   },
 ];
+
+let userChat = [];
 const useStyles = makeStyles((theme) => ({
   layout: {
     position: "fixed",
@@ -123,7 +126,15 @@ const ChatLayout = ({
       console.log(io);
       getListFriends(io).then((lstFriends) => {
         io.on("join", (listGuest, newUser) => {
-          console.log("join");
+          setListUserChat((list) => {
+            const newList = list.map((user) => {
+              if (user.handle === newUser) {
+                user.status = "online";
+              }
+              return user;
+            });
+            return newList;
+          });
           if (lstFriends.length !== 0) {
             listGuest = listGuest.filter(
               (guest) =>
@@ -146,7 +157,16 @@ const ChatLayout = ({
           setListUser(listGuest);
         });
         io.on("leave", (userHandle, listUserOnline) => {
-          console.log("leave");
+          setListUserChat((list) => {
+            const newList = list.map((user) => {
+              if (user.handle === userHandle) {
+                user.status = "offline";
+              }
+              return user;
+            });
+            return newList;
+          });
+
           const indexFr = lstFriends.findIndex(
             (item) => item.user.handle == userHandle
           );
@@ -170,16 +190,38 @@ const ChatLayout = ({
             setListUser(listUserOnline);
           }
         });
-        io.on("serviceMessage", (mess, listUserNow) => {
-          setListUserChat((list) => {
-            console.log("list ne");
-            console.log(list);
-            let newList = list.map((item) => {
-              if (item.handle == mess.from) item.messages.push(mess);
-              return item;
+        io.on("serviceMessage", async (mess, userSend) => {
+          let newList = [];
+          let listMess = [];
+          if (
+            userChat.indexOf(userSend.handle) !== -1 ||
+            mess.from === mess.to
+          ) {
+            setListUserChat((list) => {
+              newList = list.map((item) => {
+                if (item.handle == mess.from) item.messages.push(mess);
+                return item;
+              });
+
+              return newList;
             });
-            return newList;
-          });
+          } else {
+            userChat.push(userSend.handle);
+            io.emit("get_message", mess.from, mess.to, (listMess) => {
+              setListUserChat((list) => {
+                newList = [
+                  {
+                    handle: userSend.handle,
+                    status: userSend.status,
+                    imageurl: userSend.imageurl,
+                    _id: userSend._id,
+                    messages: listMess,
+                  },
+                ];
+                return newList;
+              });
+            });
+          }
         });
       });
     }
@@ -189,6 +231,7 @@ const ChatLayout = ({
       }
     };
   }, [isAuthenticated]);
+
   const handleAddUserChat = (handleTo, imageurl, _id, status, isFriend) => {
     console.log(handle, handleTo, imageurl, _id);
     if (listUserChat.findIndex((item) => item._id === _id) === -1) {
@@ -210,9 +253,10 @@ const ChatLayout = ({
       });
     }
   };
-  const handleCloseChat = (idUserTo) => {
+  const handleCloseChat = (idUserTo, handle) => {
     const newList = listUserChat.filter((item) => item._id !== idUserTo);
     setListUserChat(newList);
+    userChat = userChat.filter((user) => user !== handle);
     socket.emit("closeChat", idUserTo);
   };
   const sendMessage = (message, to) => {
@@ -222,17 +266,14 @@ const ChatLayout = ({
       message,
     };
     if (newMess.from !== newMess.to) {
-      console.log(newMess.from, newMess.to);
-      console.log(listUserChat);
       let newList = listUserChat.map((item) => {
         if (item.handle == newMess.to) item.messages.push(newMess);
         return item;
       });
 
       setListUserChat(newList);
-      console.log(listUserChat);
     }
-    socket.emit("sendmessage", newMess, listUserChat);
+    socket.emit("sendmessage", newMess);
   };
   return isAuthenticated ? (
     <div className={classes.layout}>
