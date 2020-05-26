@@ -5,72 +5,13 @@ import ChatBox from "./ChatBox";
 import ListUser from "./ListUser";
 import chatSocket from "../../utils/chatSocket";
 import { connect } from "react-redux";
+import RSA from "../../utils/jsencrypt";
+import AES from "../../utils/aesWrapper";
 import axios from "axios";
 import socket from "socket.io-client";
-const messages = [
-  {
-    id: 1,
-    primary: "Brunch this week?",
-    secondary: "I'll be t",
-    person: "/static/images/avatar/5.jpg",
-  },
-  {
-    id: 2,
-    primary: "Birthday Gift",
-    secondary: `Do  on it.`,
-    person: "/static/images/avatar/1.jpg",
-  },
-  {
-    id: 1,
-    primary: "Brunch this week?",
-    secondary: "I'll be t",
-    person: "/static/images/avatar/5.jpg",
-  },
-  {
-    id: 2,
-    primary: "Birthday Gift",
-    secondary: `Do  on it.`,
-    person: "/static/images/avatar/1.jpg",
-  },
-  {
-    id: 1,
-    primary: "Brunch this week?",
-    secondary: "I'll be t",
-    person: "/static/images/avatar/5.jpg",
-  },
-  {
-    id: 2,
-    primary: "Birthday Gift",
-    secondary: `Do  on it.`,
-    person: "/static/images/avatar/1.jpg",
-  },
-  {
-    id: 1,
-    primary: "Brunch this week?",
-    secondary: "I'll be t",
-    person: "/static/images/avatar/5.jpg",
-  },
-  {
-    id: 2,
-    primary: "Birthday Gift",
-    secondary: `Do  on it.`,
-    person: "/static/images/avatar/1.jpg",
-  },
-  {
-    id: 1,
-    primary: "Brunch this week?",
-    secondary: "I'll be t",
-    person: "/static/images/avatar/5.jpg",
-  },
-  {
-    id: 2,
-    primary: "Birthday Gift",
-    secondary: `Do  on it.`,
-    person: "/static/images/avatar/1.jpg",
-  },
-];
 
 let userChat = [];
+let listAesKey = {};
 const useStyles = makeStyles((theme) => ({
   layout: {
     position: "fixed",
@@ -96,6 +37,7 @@ const ChatLayout = ({
   const [socket, setSocket] = useState(null);
   const [message, SetMessage] = useState("");
   const [listMess, setListMess] = useState([]);
+  const [image, setImage] = useState("");
   const [listUserChat, setListUserChat] = useState([]);
   var io = null;
   const getListFriends = (io) => {
@@ -156,6 +98,11 @@ const ChatLayout = ({
           }
           setListUser(listGuest);
         });
+        io.on("recive_aseKey", (to, aesKey) => {
+          console.log("emvuidddddddddddddddddddddddddddddddddddddi");
+          console.log(to);
+          listAesKey[to] = aesKey;
+        });
         io.on("leave", (userHandle, listUserOnline) => {
           setListUserChat((list) => {
             const newList = list.map((user) => {
@@ -191,15 +138,23 @@ const ChatLayout = ({
           }
         });
         io.on("serviceMessage", async (mess, userSend) => {
+          console.log(mess);
+          let msgDecrypt = AES.decrypt(
+            mess,
+            listAesKey[userSend.handle],
+            "Utf8"
+          );
+          console.log(msgDecrypt);
+          let plainMsg = JSON.parse(msgDecrypt);
           let newList = [];
           let listMess = [];
           if (
             userChat.indexOf(userSend.handle) !== -1 ||
-            mess.from === mess.to
+            plainMsg.from === plainMsg.to
           ) {
             setListUserChat((list) => {
               newList = list.map((item) => {
-                if (item.handle == mess.from) item.messages.push(mess);
+                if (item.handle == plainMsg.from) item.messages.push(plainMsg);
                 return item;
               });
 
@@ -207,7 +162,7 @@ const ChatLayout = ({
             });
           } else {
             userChat.push(userSend.handle);
-            io.emit("get_message", mess.from, mess.to, (listMess) => {
+            io.emit("get_message", plainMsg.from, plainMsg.to, (listMess) => {
               setListUserChat((list) => {
                 newList = [
                   {
@@ -239,17 +194,46 @@ const ChatLayout = ({
         console.log("add user ");
         socket.emit("makeFriend", _id);
       }
-      socket.emit("get_message", handle, handleTo, (cb) => {
-        setListUserChat([
-          ...listUserChat,
-          {
-            handle: handleTo,
-            imageurl,
-            _id,
-            status,
-            messages: cb,
-          },
-        ]);
+      socket.emit("get_connection", handleTo, (key, isAesKey) => {
+        if (isAesKey) {
+          console.log("co roi");
+          listAesKey[handleTo] = key;
+          console.log(handleTo);
+          console.log(listAesKey[handleTo]);
+          socket.emit("get_message", handle, handleTo, (cb) => {
+            setListUserChat([
+              ...listUserChat,
+              {
+                handle: handleTo,
+                imageurl,
+                _id,
+                status,
+                messages: cb,
+              },
+            ]);
+          });
+        } else {
+          let aesKey = AES.createAesKey();
+          listAesKey[handleTo] = aesKey;
+          console.log(handleTo);
+          console.log(listAesKey[handleTo]);
+          console.log(aesKey);
+          let rsaEncrytedAesKey = RSA.rsaEncrypt(key, aesKey);
+          socket.emit("send_aesKey", rsaEncrytedAesKey, handleTo, () => {
+            socket.emit("get_message", handle, handleTo, (cb) => {
+              setListUserChat([
+                ...listUserChat,
+                {
+                  handle: handleTo,
+                  imageurl,
+                  _id,
+                  status,
+                  messages: cb,
+                },
+              ]);
+            });
+          });
+        }
       });
     }
   };
@@ -257,14 +241,32 @@ const ChatLayout = ({
     const newList = listUserChat.filter((item) => item._id !== idUserTo);
     setListUserChat(newList);
     userChat = userChat.filter((user) => user !== handle);
-    socket.emit("closeChat", idUserTo);
+    socket.emit("closeChat", idUserTo, handle);
+  };
+  const sendImage = (src, to) => {
+    console.log("send image");
+    console.log(to);
+    console.log(listAesKey[to]);
+    const dataEncrypt = AES.encryptMsg(src, listAesKey[to]);
+    socket.emit("sendImage", dataEncrypt, to, (newMess) => {
+      let newList = listUserChat.map((item) => {
+        if (item.handle == newMess.to) item.messages.push(newMess);
+        return item;
+      });
+
+      setListUserChat(newList);
+    });
   };
   const sendMessage = (message, to) => {
+    console.log(to);
+    console.log(listAesKey[to]);
     const newMess = {
       from: handle,
       to,
       message,
     };
+    let cypherMsg = AES.encryptMsg(JSON.stringify(newMess), listAesKey[to]);
+
     if (newMess.from !== newMess.to) {
       let newList = listUserChat.map((item) => {
         if (item.handle == newMess.to) item.messages.push(newMess);
@@ -273,7 +275,7 @@ const ChatLayout = ({
 
       setListUserChat(newList);
     }
-    socket.emit("sendmessage", newMess);
+    socket.emit("sendmessage", cypherMsg, newMess.to);
   };
   return isAuthenticated ? (
     <div className={classes.layout}>
@@ -289,6 +291,7 @@ const ChatLayout = ({
             listUserChat={listUserChat}
             userInfo={userInfo}
             sendMessage={sendMessage}
+            sendImage={sendImage}
             handleCloseChat={handleCloseChat}
           />
         ))}

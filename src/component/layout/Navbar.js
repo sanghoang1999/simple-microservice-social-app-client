@@ -18,29 +18,30 @@ import PersonIcon from "@material-ui/icons/Person";
 // icon
 import AddIcon from "@material-ui/icons/Add";
 import HomeIcon from "@material-ui/icons/Home";
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex"
+    display: "flex",
+    zIndex: 0,
   },
   menuButton: {
     marginLeft: theme.spacing(4),
     display: "none",
     [theme.breakpoints.up("sm")]: {
-      display: "block"
-    }
+      display: "block",
+    },
   },
   title: {
     flexGrow: 1,
     display: "flex",
-    flexDirection: "row-reverse"
+    flexDirection: "row-reverse",
   },
   brand: {
     fontSize: 25,
     padding: 0,
     [theme.breakpoints.down("sm")]: {
-      fontSize: "1rem"
-    }
-  }
+      fontSize: "1rem",
+    },
+  },
 }));
 
 const Navbar = ({ isAuthenticated, logout }) => {
@@ -126,8 +127,8 @@ const Navbar = ({ isAuthenticated, logout }) => {
 //   isAuthenticated: PropTypes.bool.isRequired
 // };
 
-const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
 });
 
 export default connect(mapStateToProps, { logout })(Navbar);

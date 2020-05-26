@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import AppBar from "@material-ui/core/appBar";
+import AppBar from "@material-ui/core/AppBar";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
@@ -59,6 +59,7 @@ const ListUser = ({
   listFriend,
   listUser,
 }) => {
+  console.log(handleAddUserChat);
   const classes = useStyles();
   return (
     <AppBar position="static" color="primary" className={classes.appBar}>

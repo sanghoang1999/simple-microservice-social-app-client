@@ -13,7 +13,7 @@ import signup from "./component/pages/Signup";
 import profile from "./component/Profile/Profile";
 import Navbar from "./component/layout/Navbar";
 import themeStyle from "./utils/theme";
-
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { loadUser } from "./actions/auth";
 //redux
 
@@ -28,6 +28,7 @@ if (localStorage.getItem("token")) {
 }
 
 const App = () => {
+  const matches = useMediaQuery("(min-width:600px)");
   useEffect(() => {
     store.dispatch(loadUser());
   }, []);
@@ -53,7 +54,7 @@ const App = () => {
                 />
               </Switch>
             </div>
-            <Chat />
+            {matches ? <Chat /> : null}
           </Router>
         </div>
       </MuiThemeProvider>

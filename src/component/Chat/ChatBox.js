@@ -1,15 +1,17 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import AppBar from "@material-ui/core/appBar";
+import AppBar from "@material-ui/core/AppBar";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import IconButton from "@material-ui/core/IconButton";
+import Upload from "./Upload";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import CloseIcon from "@material-ui/icons/Close";
 import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
+import ImageBox from "./ImageBox";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -17,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
     width: 247,
     borderRadius: "7px 7px 0 0",
     position: "relative",
+    boxSizing: "border-box",
   },
   avt: {
     width: 35,
@@ -47,14 +50,17 @@ const useStyles = makeStyles((theme) => ({
     resize: "none",
     maxHeight: 100,
     outline: "none",
+    fontSize: 12,
     overflow: "auto",
-    padding: "7px 0 0 5px",
+    padding: "6px 0 0 8px",
     border: "none",
-    borderTop: "1px solid #00000029",
+    marginBottom: 3,
+    boxSizing: "border-box",
   },
   text: {
     bottom: 0,
     width: "100%",
+    borderTop: "1px solid #00000029",
   },
   avtWrap: {
     position: "relative",
@@ -86,6 +92,11 @@ const useStyles = makeStyles((theme) => ({
   avtMess: {
     width: 28,
     height: 28,
+  },
+  imageUpload: {
+    width: 45,
+    height: 45,
+    padding: "8px 0 0 8px",
   },
   infoMess: {
     flex: 1,
@@ -138,17 +149,24 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: 10,
     },
   },
+  messageImage: {
+    width: 100,
+    height: 100,
+  },
 }));
 const ChatBox = ({
   userInfo: { handle, imageurl, _id, messages, status },
   sendMessage,
   listUserChat,
   handleCloseChat,
+  sendImage,
 }) => {
   console.log(status, status === "online");
   const classes = useStyles();
+  const inputMess = useRef(null);
   const scrollBottom = useRef();
   const [mess, setMess] = useState("");
+  const [src, setSrc] = useState("");
   // useEffect(() => {
   //   var a = document.getElementById("hehe");
   //   a.addEventListener("input", (e) => {
@@ -159,7 +177,7 @@ const ChatBox = ({
   //   });
   // }, []);
   useEffect(() => {
-    let textHeight = 57;
+    let textHeight = 35;
     const resizeObserver = new ResizeObserver((entries) => {
       const heightChange = textHeight - entries[0].target.offsetHeight;
       console.log(entries[0]);
@@ -178,19 +196,36 @@ const ChatBox = ({
       scrollBottom.current.scrollTo(0, scrollBottom.current.scrollHeight);
     }, 0);
   }, [listUserChat]);
+  useEffect(() => {
+    if (src.length > 0) {
+      inputMess.current.focus();
+    }
+  }, [src]);
   const handleKeyDown = (e) => {
     if (e.key == "Enter") {
       e.preventDefault();
+      console.log(mess);
+      if (src.length > 0) {
+        sendImage(src, handle);
+        setSrc("");
+        return;
+      }
       if (mess.length !== 0) {
         sendMessage(mess, handle);
+        inputMess.current.innerText = "";
+
         setMess("");
       }
     }
   };
   const handleChange = (e) => {
-    setMess(e.target.value);
+    setMess(e.target.innerText);
   };
 
+  const handleSetImage = (src) => {
+    console.log(src);
+    setSrc(src);
+  };
   return (
     <Card className={classes.card}>
       <div className={classes.header}>
@@ -254,7 +289,11 @@ const ChatBox = ({
                             className={classes.messageLeft}
                             variant="caption"
                           >
-                            {mess.message}
+                            {mess.type === "image" ? (
+                              <ImageBox image={mess.message} />
+                            ) : (
+                              mess.message
+                            )}
                           </Typography>
                         </div>
                       </div>
@@ -266,7 +305,11 @@ const ChatBox = ({
                           className={classes.messageRight}
                           variant="caption"
                         >
-                          {mess.message}
+                          {mess.type === "image" ? (
+                            <ImageBox image={mess.message} />
+                          ) : (
+                            mess.message
+                          )}
                         </Typography>
                       </div>
                     </div>
@@ -277,16 +320,22 @@ const ChatBox = ({
         </div>
       </div>
       <div id={`emvuidi_` + _id} className={classes.text}>
-        <TextareaAutosize
-          onChange={handleChange}
+        {src.length > 0 ? (
+          <img src={src} className={classes.imageUpload} alt="" />
+        ) : null}
+        <div
+          contentEditable
+          onInput={handleChange}
           onKeyDown={handleKeyDown}
           value={mess}
           className={classes.textarea}
           style={{ overflow: "auto" }}
           aria-label="minimum height"
-          rowsMin={3}
+          rowsMin={2}
           placeholder="Nhập tin nhắn"
-        />
+          ref={inputMess}
+        ></div>
+        <Upload handleSetImage={handleSetImage} />
       </div>
     </Card>
   );
